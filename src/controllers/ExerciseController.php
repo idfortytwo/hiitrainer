@@ -6,7 +6,7 @@ require_once 'src/routing/Route.php'; use Routes\Route;
 
 class ExerciseController extends ViewController {
     /**
-     * @Route(path="/exercises", method="GET")
+     * @Route(path="/exercises", methods={"GET"})
      */
     public function getAll() {
         $dal = new ExerciseRepository();

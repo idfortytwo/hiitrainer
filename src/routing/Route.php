@@ -4,7 +4,7 @@ namespace Routes;
 
 interface IRoute {
     function getPath();
-    function getMethod();
+    function getMethods();
 }
 
 use Doctrine\Common\Annotations\Annotation;
@@ -15,28 +15,23 @@ require_once 'libs/Doctrine/Common/Annotations/Annotation.php';
  * @Target({"METHOD"})
  * @Attributes({
  *   @Attribute("path", type = "string"),
- *   @Attribute("method",  type = "string"),
+ *   @Attribute("methods", type = "array<string>"),
  * })
  */
 class Route implements IRoute {
     private string $path;
-    private string $method;
+    private array $methods;
 
     public function __construct(array $values) {
         $this->path = $values['path'];
-        $this->method = $values['method'];
+        $this->methods = $values['methods'];
     }
-    /**
-     * @return string
-     */
+
     public function getPath(): string {
         return $this->path;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod(): string {
-        return $this->method;
+    public function getMethods(): array {
+        return $this->methods;
     }
 }

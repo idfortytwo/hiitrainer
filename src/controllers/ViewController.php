@@ -38,7 +38,7 @@ abstract class ViewController implements IController {
         $this->routingTable = $routingTable;
     }
 
-    protected function parseAnnotations() {
+    private function parseAnnotations() {
         $reflClass = new ReflectionClass(get_class($this));
         $reader = new AnnotationReader();
 
@@ -54,12 +54,17 @@ abstract class ViewController implements IController {
 
     private function registerEndpoint(IRoute $route, $endpoint) {
         $path = substr($route->getPath(), 1);
-        $method = $route->getMethod();
+        $methods = $route->getMethods();
 
+        $this->updateRoutingTable($path, $methods, $endpoint);
+    }
+
+    private function updateRoutingTable($path, $methods, $endpoint) {
         $routingTable = $this->getRoutingTable();
 
         $endpoints = $routingTable[$path] ?? array();
-        $endpoints[$method] = $endpoint;
+        foreach ($methods as $method)
+            $endpoints[$method] = $endpoint;
         $routingTable[$path] = $endpoints;
 
         $this->setRoutingTable($routingTable);

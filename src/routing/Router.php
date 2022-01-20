@@ -16,7 +16,7 @@ class Router {
         $httpMethod = $controller->request;
         $handler = $endpoints[$httpMethod];
 
-        echo 'request type: '.$httpMethod.'<br>';
+        echo 'request type: '.$httpMethod.', handler: '.$handler.'<br>';
         echo $controller::class.' -> '.$handler.'<br><br>';
 
         $controller->$handler();
