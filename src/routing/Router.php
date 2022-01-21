@@ -3,6 +3,7 @@
 namespace Routing;
 
 use Controllers\IController;
+use Routing\Endpoints\Endpoint;
 
 class Router {
     public array $routes = array();
@@ -15,8 +16,17 @@ class Router {
     }
 
     public function run(string $url, string $requestMethod) {
-        $endpoint = $this->routes[$url][$requestMethod];
+        $urlParts = parse_url($url);
+        $path = $urlParts['path'];
+        $args = array();
+        if (array_key_exists('query', $urlParts)) {
+            parse_str($urlParts['query'], $args);
+        }
+
+        /** @var Endpoint $endpoint */
+        $endpoint = $this->routes[$path][$requestMethod];
+
         echo $requestMethod.' '.$endpoint->getController()::class.' -> '.$endpoint->getMethodName().'<br><br>';
-        $endpoint->handle();
+        $endpoint->handle($args);
     }
 }

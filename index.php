@@ -7,7 +7,6 @@ spl_autoload_register();
 use Routing\Routing;
 
 $url = trim($_SERVER['REQUEST_URI'], '/');
-$url = parse_url($url, PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
 $router = new Routing();

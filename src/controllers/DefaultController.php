@@ -22,7 +22,11 @@ class DefaultController extends ViewController {
     /**
      * @Route(path="/hello", methods={"GET", "POST"})
      */
-    public function hello() {
-        echo 'HELLO';
+    public function hello(string $name, int $age=null) {
+        echo 'Greetings, '.$name;
+        if ($age != null) {
+            echo ' of age '.$age;
+        }
+        echo '!<br>';
     }
 }
