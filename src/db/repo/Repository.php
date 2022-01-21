@@ -2,7 +2,6 @@
 
 namespace DB\Repo;
 
-use JetBrains\PhpStorm\Pure;
 use PDOStatement;
 
 use DB\Connection;
@@ -10,7 +9,7 @@ use DB\Connection;
 abstract class Repository {
     protected Connection $database;
 
-    #[Pure] public function __construct() {
+    public function __construct() {
         $this->database = new Connection();
     }
 

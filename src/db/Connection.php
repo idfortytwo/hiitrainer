@@ -2,7 +2,6 @@
 
 namespace DB;
 
-use JetBrains\PhpStorm\Pure;
 use PDO;
 
 use Config;
@@ -13,7 +12,7 @@ class Connection {
     private string $host;
     private string $database;
 
-    #[Pure] public function __construct() {
+    public function __construct() {
         $config = (new Config())->getConnectionCredentials();
         $this->host     = $config['HOST'];
         $this->database = $config['DATABASE'];

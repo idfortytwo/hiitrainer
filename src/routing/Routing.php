@@ -2,8 +2,6 @@
 
 namespace Routing;
 
-use JetBrains\PhpStorm\Pure;
-
 use Controllers\DefaultController;
 use Controllers\ExerciseController;
 
@@ -11,7 +9,7 @@ class Routing {
     private Router $router;
     private array $controllers;
 
-    #[Pure] public function __construct() {
+    public function __construct() {
         $this->router = new Router();
         $this->controllers = [
             new DefaultController(),
