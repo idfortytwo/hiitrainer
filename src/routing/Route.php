@@ -1,6 +1,6 @@
 <?php
 
-namespace Routes;
+namespace Routing;
 
 interface IRoute {
     function getPath();

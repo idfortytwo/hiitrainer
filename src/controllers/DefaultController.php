@@ -2,7 +2,7 @@
 
 require_once 'ViewController.php';
 
-require_once 'src/routing/Route.php'; use Routes\Route;
+require_once 'src/routing/Route.php'; use Routing\Route;
 
 class DefaultController extends ViewController {
     /**
