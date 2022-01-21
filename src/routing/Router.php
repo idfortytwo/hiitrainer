@@ -1,5 +1,9 @@
 <?php
 
+namespace Routing;
+
+use Controllers\IController;
+
 class Router {
     public array $routes = array();
 

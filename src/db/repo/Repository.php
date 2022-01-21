@@ -1,8 +1,11 @@
 <?php
 
-require_once 'src/db/Connection.php';
+namespace DB\Repo;
 
 use JetBrains\PhpStorm\Pure;
+use PDOStatement;
+
+use DB\Connection;
 
 abstract class Repository {
     protected Connection $database;

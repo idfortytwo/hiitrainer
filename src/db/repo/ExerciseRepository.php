@@ -1,7 +1,10 @@
 <?php
 
-require_once 'src/db/repo/Repository.php';
-require_once 'src/db/models/Exercise.php';
+namespace DB\Repo;
+
+use PDO;
+
+use DB\Models\Exercise;
 
 class ExerciseRepository extends Repository {
     /**
@@ -11,7 +14,7 @@ class ExerciseRepository extends Repository {
         $stmt = $this->getQuery("SELECT * FROM exercise");
         $stmt->execute();
 
-        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Exercise');
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Exercise::class);
         return $stmt->fetchAll();
     }
 
@@ -25,7 +28,7 @@ class ExerciseRepository extends Repository {
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        $stmt->setFetchMode(PDO::FETCH_CLASS, 'Exercise');
+        $stmt->setFetchMode(PDO::FETCH_CLASS, Exercise::class);
         return $stmt->fetch();
     }
 }

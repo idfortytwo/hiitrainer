@@ -1,14 +1,17 @@
 <?php
 
-require_once 'src/routing/Router.php';
-require_once 'src/controllers/DefaultController.php';
-require_once 'src/controllers/ExerciseController.php';
+namespace Routing;
+
+use JetBrains\PhpStorm\Pure;
+
+use Controllers\DefaultController;
+use Controllers\ExerciseController;
 
 class Routing {
     private Router $router;
     private array $controllers;
 
-    public function __construct() {
+    #[Pure] public function __construct() {
         $this->router = new Router();
         $this->controllers = [
             new DefaultController(),

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'IController.php';
+namespace Controllers;
 
 abstract class ViewController implements IController {
     protected function render(string $template = null, array $variables = []) {

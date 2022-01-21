@@ -1,7 +1,8 @@
 <?php
 
 namespace Routing;
-use IController;
+
+use Controllers\IController;
 
 class Endpoint {
     private IController $controller;

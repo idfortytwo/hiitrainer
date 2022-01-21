@@ -1,8 +1,11 @@
 <?php
 
+namespace Routing;
+
 use Doctrine\Common\Annotations\AnnotationReader;
-use Routing\IRoute;
-use Routing\Endpoint;
+use ReflectionClass;
+
+use Controllers\IController;
 
 class RouteInspector {
     private IController $controller;

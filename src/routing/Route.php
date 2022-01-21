@@ -2,13 +2,7 @@
 
 namespace Routing;
 
-interface IRoute {
-    function getPath();
-    function getMethods();
-}
-
 use Doctrine\Common\Annotations\Annotation;
-require_once 'libs/Doctrine/Common/Annotations/Annotation.php';
 
 /**
  * @Annotation

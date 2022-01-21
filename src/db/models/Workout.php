@@ -1,5 +1,7 @@
 <?php
 
+namespace DB\Models;
+
 class Workout {
     private int $id;
     private string $title;

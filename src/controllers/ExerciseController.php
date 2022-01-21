@@ -1,8 +1,9 @@
 <?php
 
-require_once 'src/db/repo/ExerciseRepository.php';
+namespace Controllers;
 
-require_once 'src/routing/Route.php'; use Routing\Route;
+use Routing\Route;
+use DB\Repo\ExerciseRepository;
 
 class ExerciseController extends ViewController {
     /**

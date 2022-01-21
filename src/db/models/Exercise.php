@@ -1,5 +1,7 @@
 <?php
 
+namespace DB\Models;
+
 class Exercise {
     private int $id;
     private string $name;
