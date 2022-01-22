@@ -64,15 +64,26 @@ class RouteInspector {
     }
 
     private function mapEndpoint(IRoute $route, Endpoint $endpoint) {
-        $url = substr($route->getPath(), 1);
+        $path = substr($route->getPath(), 1);
+        $pathRegex = $this->parseToRegex($path);
+
         $methods = $route->getMethods();
-        $this->updateRoutingMap($url, $methods, $endpoint);
+        $this->updateRoutingMap($pathRegex, $methods, $endpoint);
     }
 
-    private function updateRoutingMap(string $url, array $requestMethods, Endpoint $endpoint) {
-        $endpoints = $this->routingMap[$url] ?? array();
-        foreach ($requestMethods as $requestMethod)
+    private function parseToRegex(string $path) : string {
+        $path = preg_replace('(/)', '\/', $path);
+        $pattern = '({(.+)})';
+        $replacement = '(?P<${1}>\w+)';
+
+        return '(^'.preg_replace($pattern, $replacement, $path).'$)';
+    }
+
+    private function updateRoutingMap(string $pathRegex, array $requestMethods, Endpoint $endpoint) {
+        $endpoints = $this->routingMap[$pathRegex] ?? array();
+        foreach ($requestMethods as $requestMethod) {
             $endpoints[$requestMethod] = $endpoint;
-        $this->routingMap[$url] = $endpoints;
+        }
+        $this->routingMap[$pathRegex] = $endpoints;
     }
 }
