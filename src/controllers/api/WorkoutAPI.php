@@ -1,11 +1,12 @@
 <?php
 
-namespace Controllers;
+namespace Controllers\API;
 
+use Controllers\Controller;
 use Routing\Route;
 use DB\Repo\WorkoutRepository;
 
-class WorkoutController extends ViewController {
+class WorkoutAPI implements Controller {
     /**
      * @Route(path="/workout/{id}", methods={"GET"})
      */

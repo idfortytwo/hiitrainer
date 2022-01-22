@@ -2,12 +2,12 @@
 
 namespace Routing;
 
-use Controllers\IController;
+use Controllers\Controller;
 
 class Router {
     public array $routes = array();
 
-    public function register(IController $controller) {
+    public function register(Controller $controller) {
         $inspector = new RouteInspector($controller);
         foreach($inspector->getRoutingMap() as $urlRegex => $endpoint) {
             $this->routes[$urlRegex] = $endpoint;

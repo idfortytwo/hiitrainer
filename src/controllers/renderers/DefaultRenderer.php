@@ -1,10 +1,11 @@
 <?php
 
-namespace Controllers;
+namespace Controllers\Renderers;
 
+use Controllers\Renderer;
 use Routing\Route;
 
-class DefaultController extends ViewController {
+class DefaultRenderer extends Renderer {
     /**
      * @Route(path="/", methods={"GET"})
      */

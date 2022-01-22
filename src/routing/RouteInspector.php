@@ -7,16 +7,16 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
 
-use Controllers\IController;
+use Controllers\Controller;
 use Routing\Endpoints\Endpoint;
 use Routing\Endpoints\Parameter;
 
 class RouteInspector {
-    private IController $controller;
+    private Controller $controller;
     private array $routingMap = array();
     private AnnotationReader $reader;
 
-    public function __construct(IController $controller) {
+    public function __construct(Controller $controller) {
         $this->controller = $controller;
         $this->reader = new AnnotationReader();
     }

@@ -2,9 +2,9 @@
 
 namespace Routing;
 
-use Controllers\DefaultController;
-use Controllers\ExerciseController;
-use Controllers\WorkoutController;
+use Controllers\API\ExerciseAPI;
+use Controllers\API\WorkoutAPI;
+use Controllers\Renderers\DefaultRenderer;
 
 class Routing {
     private Router $router;
@@ -13,9 +13,9 @@ class Routing {
     public function __construct() {
         $this->router = new Router();
         $this->controllers = [
-            new DefaultController(),
-            new ExerciseController(),
-            new WorkoutController()
+            new DefaultRenderer(),
+            new ExerciseAPI(),
+            new WorkoutAPI()
         ];
     }
 

@@ -2,25 +2,25 @@
 
 namespace Routing\Endpoints;
 
-use Controllers\IController;
+use Controllers\Controller;
 
 class Endpoint {
-    private IController $controller;
+    private Controller $controller;
     private string $methodName;
     private array $methodParams;
 
     /**
-     * @param IController $controller
+     * @param Controller $controller
      * @param string $methodName
      * @param array $methodParams
      */
-    public function __construct(IController $controller, string $methodName, array $methodParams) {
+    public function __construct(Controller $controller, string $methodName, array $methodParams) {
         $this->controller = $controller;
         $this->methodName = $methodName;
         $this->methodParams = $methodParams;
     }
 
-    public function getController(): IController {
+    public function getController(): Controller {
         return $this->controller;
     }
 

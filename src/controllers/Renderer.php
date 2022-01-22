@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-abstract class ViewController implements IController {
+abstract class Renderer implements Controller {
     protected function render(string $template = null, array $variables = []) {
         $templatePath = 'public/views/'. $template.'.php';
         $output = 'File not found';
