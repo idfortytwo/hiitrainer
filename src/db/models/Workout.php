@@ -5,39 +5,39 @@ namespace DB\Models;
 class Workout {
     private int $id;
     private string $title;
+    private int $setCount;
     private int $setRestDuration;
+    private array $exercises;
 
-    public function __construct(int $id, string $title, int $setRestDuration) {
+    public function __construct(int $id, string $title, int $setCount, int $setRestDuration, array $exercises) {
         $this->id = $id;
         $this->title = $title;
         $this->setRestDuration = $setRestDuration;
+        $this->setCount = $setCount;
+        $this->exercises = $exercises;
     }
 
-    public function getId(): int
-    {
+    public function getId(): int {
         return $this->id;
     }
 
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function getTitle(): string
-    {
+    public function getTitle(): string {
         return $this->title;
     }
-
-    public function setTitle(string $title): void {
-        $this->title = $title;
+    public function getSetCount(): int {
+        return $this->setCount;
     }
 
     public function getSetRestDuration(): int {
         return $this->setRestDuration;
     }
 
-    public function setSetRestDuration(int $setRestDuration): void {
-        $this->setRestDuration = $setRestDuration;
+    public function getExercises(): array {
+        return $this->exercises;
     }
 
+    public function __toString(): string {
+        return "Workout(id: {$this->id}, title: '{$this->title}', 
+                setCount: {$this->setCount}, setRestDuration: {$this->setRestDuration})";
+    }
 }

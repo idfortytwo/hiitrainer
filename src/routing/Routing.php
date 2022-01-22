@@ -4,6 +4,7 @@ namespace Routing;
 
 use Controllers\DefaultController;
 use Controllers\ExerciseController;
+use Controllers\WorkoutController;
 
 class Routing {
     private Router $router;
@@ -13,7 +14,8 @@ class Routing {
         $this->router = new Router();
         $this->controllers = [
             new DefaultController(),
-            new ExerciseController()
+            new ExerciseController(),
+            new WorkoutController()
         ];
     }
 
