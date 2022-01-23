@@ -5,6 +5,8 @@ namespace Routing;
 use Controllers\API\ExerciseAPI;
 use Controllers\API\WorkoutAPI;
 use Controllers\Renderers\DefaultRenderer;
+use HTTP\Requests\Request;
+use HTTP\Responses\IResponse;
 
 class Routing {
     private Router $router;
@@ -25,8 +27,8 @@ class Routing {
         }
     }
 
-    public function run(string $url, string $requestMethod) {
-        $this->router->run($url, $requestMethod);
+    public function run(Request $request) : IResponse {
+        return $this->router->run($request);
     }
 }
 

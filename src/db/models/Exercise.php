@@ -2,7 +2,9 @@
 
 namespace DB\Models;
 
-class Exercise {
+use JsonSerializable;
+
+class Exercise implements JsonSerializable {
     private int $id;
     private string $name;
     private string $filename;
@@ -31,5 +33,13 @@ class Exercise {
 
     public function __toString(): string {
         return "Exercise(id: {$this->id}, name: {$this->name}, filename: {$this->filename})";
+    }
+
+    public function jsonSerialize() : array {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'filename' => $this->filename
+        ];
     }
 }

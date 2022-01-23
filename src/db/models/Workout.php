@@ -2,14 +2,16 @@
 
 namespace DB\Models;
 
-class Workout {
+use JsonSerializable;
+
+class Workout implements JsonSerializable {
     private int $id;
     private string $title;
     private int $setCount;
     private int $setRestDuration;
     private array $exercises;
 
-    public function __construct(int $id, string $title, int $setCount, int $setRestDuration, array $exercises) {
+    public function __construct(int $id, string $title, int $setCount, int $setRestDuration, array $exercises = []) {
         $this->id = $id;
         $this->title = $title;
         $this->setRestDuration = $setRestDuration;
@@ -39,5 +41,15 @@ class Workout {
     public function __toString(): string {
         return "Workout(id: {$this->id}, title: '{$this->title}', 
                 setCount: {$this->setCount}, setRestDuration: {$this->setRestDuration})";
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'setCount' => $this->setCount,
+            'setRestDuration' => $this->setRestDuration,
+            'exercises' => $this->exercises
+        ];
     }
 }

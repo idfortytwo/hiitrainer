@@ -3,6 +3,8 @@
 namespace Routing\Endpoints;
 
 use Controllers\Controller;
+use HTTP\Responses\IResponse;
+use HTTP\Responses\JSONResponse;
 
 class Endpoint {
     private Controller $controller;
@@ -32,15 +34,17 @@ class Endpoint {
         return $this->methodParams;
     }
 
-    public function handle(array $args) {
-        $methodName = $this->methodName;
-
+    public function handle(array $args) : IResponse {
         $validator = new ParamValidator($args, $this->methodParams);
-        $validationResponse = $validator->validate();
-        if (empty($validationResponse)) {
-            $this->controller->$methodName(...$args);
+        $validationResult = $validator->validate();
+
+        if (empty($validationResult)) {
+            $methodName = $this->methodName;
+            return $this->controller->$methodName(...$args);
         } else {
-            echo $validationResponse;
+            return new JSONResponse([
+                'message' => $validationResult
+            ], 400);
         }
     }
 }

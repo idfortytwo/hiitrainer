@@ -3,6 +3,10 @@
 namespace Routing;
 
 use Controllers\Controller;
+use HTTP\Requests\Request;
+use HTTP\Responses\IResponse;
+use HTTP\Responses\NotFoundResponse;
+use Routing\Endpoints\Endpoint;
 
 class Router {
     public array $routes = array();
@@ -14,21 +18,21 @@ class Router {
         }
     }
 
-    public function run(string $url, string $requestMethod) {
-        [$path, $queryArgs] = $this->parseUrl($url);
+    public function run(Request $request) : IResponse {
+        [$path, $queryArgs] = $this->parseUrl($request->getUrl());
 
         foreach ($this->routes as $pathRegex => $requestMethodsMap) {
             $matches = preg_match($pathRegex, $path, $matchesArr);
             if ($matches) {
-                $endpoint = $requestMethodsMap[$requestMethod];
-                echo $requestMethod.' '.$endpoint->getController()::class.' -> '.$endpoint->getMethodName().'<br><br>';
-
+                /** @var Endpoint $endpoint */
                 $pathArgs = array_filter($matchesArr, "is_string", ARRAY_FILTER_USE_KEY);
                 $args = array_merge($pathArgs, $queryArgs);
 
-                $endpoint->handle($args);
+                $endpoint = $requestMethodsMap[$request->getMethod()];
+                return $endpoint->handle($args);
             }
         }
+        return new NotFoundResponse();
     }
 
     private function parseUrl(string $url) : array {

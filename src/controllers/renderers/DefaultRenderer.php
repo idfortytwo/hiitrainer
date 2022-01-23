@@ -3,31 +3,34 @@
 namespace Controllers\Renderers;
 
 use Controllers\Renderer;
+use HTTP\Responses\Response;
 use Routing\Route;
 
 class DefaultRenderer extends Renderer {
     /**
      * @Route(path="/", methods={"GET"})
      */
-    public function root() {
-        echo 'at root';
+    public function root() : Response {
+        return new Response('at root');
     }
 
     /**
      * @Route(path="/", methods={"POST"})
      */
-    public function rootPost() {
-        echo 'posting at root';
+    public function rootPost() : Response {
+        return new Response('posting at root');
     }
 
     /**
      * @Route(path="/hello", methods={"GET", "POST"})
      */
-    public function hello(string $name, int $age=null) {
-        echo 'Greetings, '.$name;
+    public function hello(string $name, int $age=null) : Response {
+        $content = 'Greetings, '.$name;
         if ($age != null) {
-            echo ' of age '.$age;
+            $content .= ' of age '.$age;
         }
-        echo '!<br>';
+        $content .= '!<br>';
+
+        return new Response($content);
     }
 }

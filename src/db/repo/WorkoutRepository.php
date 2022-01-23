@@ -9,10 +9,10 @@ use DB\Models\Workout;
 
 class WorkoutRepository extends Repository {
     /**
-//     * @return array<int, Workout>
-     * @return mixed|Workout
+     * @param int $id
+     * @return Workout|null
      */
-    public function getWorkout(int $id) : mixed {
+    public function getWorkout(int $id) : Workout|null {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
             select wkt.id, wkt.title, set_count, set_rest_duration, e.name, st.type stage_type, sem.stage_data, rest_duration, filename 

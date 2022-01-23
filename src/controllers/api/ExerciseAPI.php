@@ -3,6 +3,7 @@
 namespace Controllers\API;
 
 use Controllers\Controller;
+use HTTP\Responses\JSONResponse;
 use Routing\Route;
 use DB\Repo\ExerciseRepository;
 
@@ -10,10 +11,10 @@ class ExerciseAPI implements Controller {
     /**
      * @Route(path="/exercises", methods={"GET"})
      */
-    public function getAll() {
+    public function getAll(): JSONResponse {
         $dal = new ExerciseRepository();
-        foreach($dal->getExercises() as $exercise) {
-            echo '<img src="public/images/' . $exercise->getFilename() .'" alt=""><br>';
-        }
+        return new JSONResponse([
+            'exercises' => $dal->getExercises()
+        ]);
     }
 }
