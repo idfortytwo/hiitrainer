@@ -5,6 +5,7 @@ namespace Routing;
 use Controllers\API\ExerciseAPI;
 use Controllers\API\WorkoutAPI;
 use Controllers\Renderers\DefaultRenderer;
+use Controllers\Renderers\WorkoutRenderer;
 use HTTP\Requests\Request;
 use HTTP\Responses\IResponse;
 
@@ -17,7 +18,8 @@ class Routing {
         $this->controllers = [
             new DefaultRenderer(),
             new ExerciseAPI(),
-            new WorkoutAPI()
+            new WorkoutAPI(),
+            new WorkoutRenderer()
         ];
     }
 

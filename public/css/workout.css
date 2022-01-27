@@ -1,0 +1,9 @@
+.inactive > img {
+    height: 150px;
+    width: 150px;
+}
+
+.active > img {
+    height: 300px;
+    width: 300px;
+}

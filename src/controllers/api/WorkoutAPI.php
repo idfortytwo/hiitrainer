@@ -16,8 +16,7 @@ class WorkoutAPI implements Controller {
         $workout = $dal->getWorkout($id);
 
         return new JSONResponse([
-            'workout' => $workout,
-            'exercise' => $workout->getExercises()
+            'workout' => $workout
         ]);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Controllers;
 
+use HTTP\Responses\Response;
+
 abstract class Renderer implements Controller {
-    protected function render(string $template = null, array $variables = []) {
+    protected function render(string $template = null, array $variables = []): Response {
         $templatePath = 'public/views/'. $template.'.php';
         $output = 'File not found';
 
@@ -14,6 +16,6 @@ abstract class Renderer implements Controller {
             include $templatePath;
             $output = ob_get_clean();
         }
-        print $output;
+        return new Response($output);
     }
 }
