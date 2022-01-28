@@ -9,6 +9,28 @@ use DB\Models\Exercise;
 use DB\Models\Workout;
 
 class WorkoutRepository extends Repository {
+    public function getWorkouts() : array {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration
+        from workout as wkt
+             join workout_difficulty wd on wd.id = wkt.difficulty_id
+             join workout_type wt on wt.id = wkt.focus_id
+             join workout_focus wf on wf.id = wkt.focus_id
+        ");
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll();
+
+        $workouts = array();
+        foreach ($rs as $r) {
+            $workout = new Workout($r['id'], $r['title'], $r['type'], $r['difficulty'], $r['focus'], $r['set_count'], $r['set_rest_duration']);
+            $workouts[] = $workout;
+        };
+        return $workouts;
+    }
+
     /**
      * @param int $id
      * @return Workout|null
@@ -16,15 +38,18 @@ class WorkoutRepository extends Repository {
     public function getWorkout(int $id) : Workout|null {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-            select wkt.id, wkt.title, set_count, set_rest_duration, e.name, st.type stage_type, sem.stage_data,
-                   sem.\"order\", rest_duration, filename 
-                from workout wkt
-            join set_workout_map swm on wkt.id = swm.wrkt_id
-            join set_exercise_map sem on swm.set_id = sem.set_id
-            join stage_type st on st.id = sem.stage_type_id
-            join exercise e on sem.exr_id = e.id
-            where wkt.id = :id
-            order by sem.\"order\";");
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, e.name, st.type stage_type, sem.stage_data,
+               sem.\"order\", rest_duration, filename
+        from workout wkt
+             join workout_type wt on wt.id = wkt.type_id
+             join workout_difficulty wd on wd.id = wkt.difficulty_id
+             join workout_focus wf on wf.id = wkt.focus_id
+             join exercise_workout_map sem on wkt.id = sem.wkt_id
+             join stage_type st on st.id = sem.stage_type_id
+             join exercise e on sem.exr_id = e.id
+        where wkt.id = :id
+        order by sem.\"order\";
+        ");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -39,6 +64,7 @@ class WorkoutRepository extends Repository {
         }
 
         $fr = $rs[0];
-        return new Workout($fr['id'], $fr['title'], $fr['set_count'], $fr['set_rest_duration'], $stages);
+        return new Workout($fr['id'], $fr['title'], $fr['type'], $fr['difficulty'], $fr['focus'],
+            $fr['set_count'], $fr['set_rest_duration'], $stages);
     }
 }

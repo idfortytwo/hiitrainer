@@ -7,13 +7,21 @@ use JsonSerializable;
 class Workout implements JsonSerializable {
     private int $id;
     private string $title;
+    private string $type;
+    private string $difficulty;
+    private string $focus;
     private int $setCount;
     private int $setRestDuration;
+
     private array $stages;
 
-    public function __construct(int $id, string $title, int $setCount, int $setRestDuration, array $stages = []) {
+    public function __construct(int $id, string $title, string $type, string $difficulty, string $focus,
+                                int $setCount, int $setRestDuration, array $stages = []) {
         $this->id = $id;
         $this->title = $title;
+        $this->type = $type;
+        $this->difficulty = $difficulty;
+        $this->focus = $focus;
         $this->setRestDuration = $setRestDuration;
         $this->setCount = $setCount;
         $this->stages = $stages;
@@ -26,6 +34,19 @@ class Workout implements JsonSerializable {
     public function getTitle(): string {
         return $this->title;
     }
+
+    public function getType(): string {
+        return $this->type;
+    }
+
+    public function getDifficulty(): string {
+        return $this->difficulty;
+    }
+
+    public function getFocus(): string {
+        return $this->focus;
+    }
+
     public function getSetCount(): int {
         return $this->setCount;
     }
