@@ -77,9 +77,6 @@ class Workout {
         this.stages = [];
         this.setsCompleted = 0;
         this.reset();
-
-        let kek = document.querySelector('#stage-countdown');
-        console.log('stage countdown:', kek);
     }
 
     public render() {

@@ -1,12 +1,21 @@
 <!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <title>Workout</title>
-    <link rel="stylesheet" href="/public/css/workout.css" type="text/css">
+    <title>Workouts</title>
     <link rel="stylesheet" href="/public/css/style.css" type="text/css">
-    <script type="text/javascript" src="/public/js/workout.js" defer></script>
+    <link rel="stylesheet" href="/public/css/workout.css" type="text/css">
+    <script src="/public/js/workout.js" defer></script>
 </head>
 
 <body>
+<header>
+    <span class="nav-item">HIITrainer</span>
+    <!--suppress HtmlUnknownTarget -->
+    <a class="nav-item" href="/workouts/">Workouts</a>
+</header>
+
+<main class="content">
     <div id="sets-completed">
         <span>Sets completed: </span>
     </div>
@@ -26,4 +35,11 @@
         <br>
         <section id="stages-section"></section>
     </section>
+</main>
+
+<footer>
+    Artem Buhera 2022
+</footer>
 </body>
+
+</html>

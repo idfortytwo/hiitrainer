@@ -12,7 +12,7 @@ class WorkoutRepository extends Repository {
     public function getWorkouts() : array {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wkt.image
         from workout as wkt
              join workout_difficulty wd on wd.id = wkt.difficulty_id
              join workout_type wt on wt.id = wkt.focus_id
@@ -25,7 +25,7 @@ class WorkoutRepository extends Repository {
 
         $workouts = array();
         foreach ($rs as $r) {
-            $workout = new Workout($r['id'], $r['title'], $r['type'], $r['difficulty'], $r['focus'], $r['set_count'], $r['set_rest_duration']);
+            $workout = new Workout($r['id'], $r['title'], $r['type'], $r['difficulty'], $r['focus'], $r['set_count'], $r['set_rest_duration'], $r['image']);
             $workouts[] = $workout;
         };
         return $workouts;
@@ -38,8 +38,8 @@ class WorkoutRepository extends Repository {
     public function getWorkout(int $id) : Workout|null {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, e.name, st.type stage_type, sem.stage_data,
-               sem.\"order\", rest_duration, filename
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, wkt.image, 
+               e.name, st.type stage_type, sem.stage_data, sem.\"order\", rest_duration, filename
         from workout wkt
              join workout_type wt on wt.id = wkt.type_id
              join workout_difficulty wd on wd.id = wkt.difficulty_id
@@ -65,6 +65,6 @@ class WorkoutRepository extends Repository {
 
         $fr = $rs[0];
         return new Workout($fr['id'], $fr['title'], $fr['type'], $fr['difficulty'], $fr['focus'],
-            $fr['set_count'], $fr['set_rest_duration'], $stages);
+            $fr['set_count'], $fr['set_rest_duration'], $fr['image'], $stages);
     }
 }

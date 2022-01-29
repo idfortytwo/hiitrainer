@@ -12,11 +12,12 @@ class Workout implements JsonSerializable {
     private string $focus;
     private int $setCount;
     private int $setRestDuration;
+    private string $image;
 
     private array $stages;
 
     public function __construct(int $id, string $title, string $type, string $difficulty, string $focus,
-                                int $setCount, int $setRestDuration, array $stages = []) {
+                                int $setCount, int $setRestDuration, string $image, array $stages = []) {
         $this->id = $id;
         $this->title = $title;
         $this->type = $type;
@@ -24,6 +25,7 @@ class Workout implements JsonSerializable {
         $this->focus = $focus;
         $this->setRestDuration = $setRestDuration;
         $this->setCount = $setCount;
+        $this->image = $image;
         $this->stages = $stages;
     }
 
@@ -53,6 +55,10 @@ class Workout implements JsonSerializable {
 
     public function getSetRestDuration(): int {
         return $this->setRestDuration;
+    }
+
+    public function getImage(): string {
+        return $this->image;
     }
 
     public function getStages(): array {
