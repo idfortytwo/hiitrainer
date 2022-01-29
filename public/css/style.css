@@ -10,15 +10,16 @@ html {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
     background-color: var(--main-theme-primary);
+    min-height: 100%;
 }
 
 body {
-    max-width: 1200px;
     width: 100%;
-    margin: auto;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 a {
@@ -36,15 +37,13 @@ header {
 }
 
 main {
-    display: flex;
-    flex-direction: column;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    margin: auto;
+    max-width: 1200px;
     padding: 1rem;
-    margin: 0 0 auto 0;
+    /*margin: 0 0 auto 0;*/
+    /*height: 90vh;*/
+    width: 100%;
 }
 
-footer {
-    display: flex;
-    padding: 0.5rem;
-    flex-direction: row;
-    background-color: var(--main-theme-dark);
-}

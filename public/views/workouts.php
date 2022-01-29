@@ -40,9 +40,6 @@
         </div>
     </main>
 
-    <footer>
-        Artem Buhera 2022
-    </footer>
 </body>
 
 </html>
