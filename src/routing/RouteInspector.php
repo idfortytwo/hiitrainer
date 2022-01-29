@@ -74,7 +74,7 @@ class RouteInspector {
     private function parseToRegex(string $path) : string {
         $path = preg_replace('(/)', '\/', $path);
         $pattern = '({(.+)})';
-        $replacement = '(?P<${1}>\w+)';
+        $replacement = '(?P<${1}>\d+)';
 
         return '(^'.preg_replace($pattern, $replacement, $path).'$)';
     }
