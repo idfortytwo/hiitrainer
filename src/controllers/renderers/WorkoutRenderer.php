@@ -4,6 +4,7 @@ namespace Controllers\Renderers;
 
 use Controllers\Renderer;
 use DB\Models\Stage;
+use DB\Repo\ExerciseRepository;
 use DB\Repo\WorkoutRepository;
 use HTTP\Responses\JSONResponse;
 use Routing\Route;
@@ -27,6 +28,18 @@ class WorkoutRenderer extends Renderer {
         $workout = $dal->getWorkout($id);
 
         return $this->render('workout', ['workout' => $workout]);
+    }
+
+    /**
+     * @Route(path="/workouts/creator", methods={"GET"})
+     */
+    public function addWorkout() {
+        $dal = new ExerciseRepository();
+        $exercises = $dal->getExercises();
+
+        return $this->render('add-workout', [
+            'exercises' => $exercises
+        ]);
     }
 }
 
