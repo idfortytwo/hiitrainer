@@ -1,9 +1,31 @@
-.inactive > img {
-    height: 150px;
-    width: 150px;
+.splide__slide img {
+    width: 100%;
+    height: auto;
 }
 
-.active > img {
-    height: 300px;
-    width: 300px;
+.thumbnail-slide.is-active {
+    background-color: var(--main-theme-dark);
+    border-radius: 0.5rem;
+}
+
+.thumbnail-slide img {
+    width: 90%;
+    padding: 5px;
+}
+
+#sliders,
+#main-slider {
+    margin: auto auto 25px;
+}
+
+#start-or-stop-button {
+    margin: auto auto 25px;
+    width: 120px;
+    height: 40px;
+    background-color: var(--main-theme-dark);
+    color: white;
+    border: 2px;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
 }

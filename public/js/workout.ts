@@ -19,67 +19,33 @@ interface WorkoutModel {
     stages: StageModel[];
 }
 
-class Stage {
-    public data: StageModel;
-    public element: Element;
-    public number: number;
 
-    constructor(stageData: StageModel) {
-        this.data = stageData;
-        this.element = Stage.generateElement(stageData.order, stageData.exercise.name, stageData.exercise.filename);
-        this.number = parseInt(this.element.id);
-    }
-
-    static generateElement(order: number, exerciseName: string, imageFilename: string) {
-        let stageElem = document.createElement('div');
-        stageElem.classList.add('stage');
-        stageElem.classList.add('inactive');
-        stageElem.id = String(order);
-
-        let exerciseNameElem = document.createElement('h4');
-        exerciseNameElem.classList.add('exerciseName');
-        exerciseNameElem.textContent = exerciseName;
-        stageElem.appendChild(exerciseNameElem);
-
-        let imageElem = document.createElement('img');
-        imageElem.src = '../../public/images/' + imageFilename;
-        stageElem.appendChild(imageElem);
-
-        return stageElem;
-    }
-
-    public activate() {
-        this.element.classList.remove('inactive');
-        this.element.classList.add('active');
-    }
-
-    public deactivate() {
-        this.element.classList.remove('active');
-        this.element.classList.add('inactive');
-    }
-}
 
 class Workout {
-    stagesSection: Element = document.querySelector('#stages-section');
     stageCountdownLabel: Element = document.querySelector('#stage-countdown').firstElementChild;
     restCountdownLabel: Element = document.querySelector('#rest-countdown').firstElementChild;
     setsCompletedLabel: Element = document.querySelector('#sets-completed').firstElementChild;
+    startOrTopButton: Element = document.querySelector('#start-or-stop-button');
+
+    mainSlider;
+    stageTimer;
+    restTimer;
 
     workoutData: WorkoutModel;
-    stages: Stage[];
+    stages: StageModel[];
     stagesCount: number;
     currentStageNumber: number;
-    currentSet: number;
     setsCompleted: number;
     active: boolean;
 
-    constructor() {
+    constructor(mainSlider) {
+        this.mainSlider = mainSlider;
         this.stages = [];
         this.setsCompleted = 0;
         this.reset();
     }
 
-    public render() {
+    public fetchStages() {
         const url = document.documentURI;
         const urlParts = url.split('/');
         const workoutID = urlParts[urlParts.length - 1]
@@ -88,22 +54,11 @@ class Workout {
             .then(response => response.json())
             .then((data: { workout: WorkoutModel }) => {
                 this.workoutData = data.workout;
-                this.renderStages(data.workout.stages)
+                this.stages = data.workout.stages;
                 this.stagesCount = data.workout.stages.length;
             })
     }
 
-    renderStages(stages: StageModel[]) {
-        for (let stage of stages) {
-            this.renderAndSaveStage(stage);
-        }
-    }
-
-    renderAndSaveStage(stageData: StageModel) {
-        const stage = new Stage(stageData);
-        this.stages.push(stage);
-        this.stagesSection.appendChild(stage.element);
-    }
 
     public startOrStop() {
         if (this.active) {
@@ -114,33 +69,39 @@ class Workout {
     }
 
     stop() {
+        this.active = false;
+        this.startOrTopButton.textContent = 'Start set';
         this.reset();
     }
 
     reset() {
+        this.mainSlider.go(0);
         this.currentStageNumber = 0;
-        this.currentSet = 0;
-        this.active = false;
+        this.clearRestCountdownLabel()
+        this.clearStageCountdownLabel()
+        clearInterval(this.stageTimer);
+        clearInterval(this.restTimer);
     }
 
     start() {
+        this.active = true;
+        this.startOrTopButton.textContent = 'Reset set';
         this.startStage(0);
     }
 
     startStage(stageNumber: number) {
         let stage = this.stages[stageNumber];
-        stage.activate();
 
-        let stageDuration = parseInt(stage.data.value);
+        let stageDuration = parseInt(stage.value);
         this.updateStageCountdownLabel(0, stageDuration);
 
-        if (stage.data.type == 'duration') {
+        if (stage.type == 'duration') {
             let seconds = 0;
-            let timer = setInterval(() => {
+            this.stageTimer = setInterval(() => {
                 this.updateStageCountdownLabel(seconds + 1, stageDuration);
 
                 if (seconds == stageDuration - 1) {
-                    clearInterval(timer)
+                    clearInterval(this.stageTimer)
                     this.finishStage(stage, stageNumber);
                 }
 
@@ -149,9 +110,10 @@ class Workout {
         }
     }
 
-    finishStage(stage: Stage, stageNumber: number) {
+    finishStage(stage: StageModel, stageNumber: number) {
+        this.mainSlider.go('>');
+
         this.clearStageCountdownLabel();
-        stage.deactivate()
 
         if (stageNumber + 1 < this.stagesCount) {
             this.startStage(stageNumber + 1);
@@ -192,11 +154,11 @@ class Workout {
 
         let seconds = restDuration;
         this.updateRestCountdownLabel(seconds);
-        let timer = setInterval(() => {
+        this.restTimer = setInterval(() => {
             this.updateRestCountdownLabel(seconds - 1);
 
             if (seconds == 1) {
-                clearInterval(timer)
+                clearInterval(this.restTimer)
                 this.clearRestCountdownLabel()
                 this.startStage(0);
             }
@@ -219,5 +181,42 @@ class Workout {
     }
 }
 
-const workout = new Workout();
-workout.render()
+let mainSlider;
+let thumbnailsSlider;
+let workout;
+
+document.addEventListener( 'DOMContentLoaded', function () {
+    // @ts-ignore
+    mainSlider = new Splide('#main-slider', {
+        type      : 'fade',
+        rewind    : true,
+        pagination: false,
+        arrows    : false,
+        width     : 300
+    } );
+
+    // @ts-ignore
+    thumbnailsSlider = new Splide('#thumbnail-slider', {
+        fixedWidth  : 100,
+        fixedHeight : 100,
+        gap         : 10,
+        rewind      : true,
+        pagination  : false,
+        arrows      : false,
+        cover       : false,
+        isNavigation: false,
+        // breakpoints : {
+        //     600: {
+        //         fixedWidth : 60,
+        //         fixedHeight: 44,
+        //     },
+        // },
+    } );
+
+    mainSlider.sync(thumbnailsSlider);
+    mainSlider.mount();
+    thumbnailsSlider.mount();
+
+    workout = new Workout(mainSlider);
+    workout.fetchStages();
+});

@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Workouts</title>
     <link rel="stylesheet" href="/public/css/style.css" type="text/css">
     <link rel="stylesheet" href="/public/css/workouts.css" type="text/css">

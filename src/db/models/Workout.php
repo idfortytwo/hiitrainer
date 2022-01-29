@@ -61,6 +61,9 @@ class Workout implements JsonSerializable {
         return $this->image;
     }
 
+    /**
+     * @return array<Stage>
+     */
     public function getStages(): array {
         return $this->stages;
     }
