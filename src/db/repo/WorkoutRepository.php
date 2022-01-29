@@ -12,7 +12,7 @@ class WorkoutRepository extends Repository {
     public function getWorkouts() : array {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wkt.image
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
         from workout as wkt
              join workout_difficulty wd on wd.id = wkt.difficulty_id
              join workout_type wt on wt.id = wkt.focus_id
@@ -27,7 +27,7 @@ class WorkoutRepository extends Repository {
         foreach ($rs as $r) {
             $workout = new Workout($r['id'], $r['title'], $r['type'], $r['difficulty'], $r['focus'], $r['set_count'], $r['set_rest_duration'], $r['image']);
             $workouts[] = $workout;
-        };
+        }
         return $workouts;
     }
 
@@ -38,8 +38,8 @@ class WorkoutRepository extends Repository {
     public function getWorkout(int $id) : Workout|null {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, wkt.image, 
-               e.name, st.type stage_type, sem.stage_data, sem.\"order\", rest_duration, filename
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, wt.image, 
+               e.name, st.type stage_type, sem.stage_data, sem.\"order\", filename
         from workout wkt
              join workout_type wt on wt.id = wkt.type_id
              join workout_difficulty wd on wd.id = wkt.difficulty_id
@@ -66,5 +66,91 @@ class WorkoutRepository extends Repository {
         $fr = $rs[0];
         return new Workout($fr['id'], $fr['title'], $fr['type'], $fr['difficulty'], $fr['focus'],
             $fr['set_count'], $fr['set_rest_duration'], $fr['image'], $stages);
+    }
+
+    public function getWorkoutDifficultyID(string $difficulty) : int {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+        select id 
+        from postgres.public.workout_difficulty
+        where difficulty = :difficulty 
+        ");
+        $stmt->bindValue(':difficulty', $difficulty);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetch()['id'];
+    }
+
+    public function getWorkoutTypeID(string $type) : int {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+        select id 
+        from postgres.public.workout_type
+        where type = :type 
+        ");
+        $stmt->bindValue(':type', $type);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetch()['id'];
+    }
+
+    public function getWorkoutFocusID(string $focus) : int {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+        select id 
+        from postgres.public.workout_focus
+        where focus = :focus 
+        ");
+        $stmt->bindValue(':focus', $focus);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetch()['id'];
+    }
+
+    public function addWorkout(string $title, int $difficultyID, int $focusID, int $typeID,
+                               int $setRestDuration, int $setCount) : int {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+        insert into workout (title, difficulty_id, focus_id, type_id, set_rest_duration, set_count) 
+        values (:title, :difficulty_id, :focus_id, :type_id, :set_rest_duration, :set_count)
+        returning id; 
+        ");
+
+        $stmt->bindValue(':title', $title);
+        $stmt->bindValue(':difficulty_id', $difficultyID);
+        $stmt->bindValue(':focus_id', $focusID);
+        $stmt->bindValue(':type_id', $typeID);
+        $stmt->bindValue(':set_rest_duration', $setRestDuration);
+        $stmt->bindValue(':set_count', $setCount);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetch()['id'];
+    }
+
+    public function addStages(array $stages, int $workoutID) {
+        $stmt = $this->database->connect();
+        $query = 'insert into exercise_workout_map (wkt_id, exr_id, "order", stage_type_id, stage_data) values';
+
+        for ($i = 0; $i < count($stages); $i++) {
+            $query .= "(:wkt_id_{$i}, :exr_id_{$i}, :order_{$i}, :stage_type_id_{$i}, :stage_data_{$i}), ";
+        }
+        $query = rtrim($query, ', ');
+        $query .= ';';
+        $stmt = $stmt->prepare($query);
+
+        $i = 0;
+        foreach ($stages as $order => $stage) {
+            $stmt->bindValue(":wkt_id_{$i}", $workoutID);
+            $stmt->bindValue(":exr_id_{$i}", $stage['exercise_id']);
+            $stmt->bindValue(":order_{$i}", $order);
+            $stmt->bindValue(":stage_type_id_{$i}", $stage['stage_type_id']);
+            $stmt->bindValue(":stage_data_{$i}", $stage['stage_data']);
+            $i++;
+        }
+        $stmt->execute();
     }
 }

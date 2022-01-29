@@ -25,11 +25,25 @@ class WorkoutAPI implements Controller {
      * @Route(path="/workout", methods={"POST"})
      */
     public function addWorkout(): JSONResponse {
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, TRUE);
+
         $dal = new WorkoutRepository();
-//        $workout = $dal->getWorkout();
+
+        $title = $input['title'];
+        $difficultyID = $dal->getWorkoutDifficultyID($input['difficulty']);
+        $typeID = $dal->getWorkoutTypeID($input['type']);
+        $focusID = $dal->getWorkoutFocusID($input['focus']);
+        $setRestDuration = $input['set_rest_duration'];
+        $setCount = $input['set_count'];
+
+        $workoutID = $dal->addWorkout($title, $difficultyID, $focusID, $typeID, $setRestDuration, $setCount);
+
+        $stages = $input['stages'];
+        $dal->addStages($stages, $workoutID);
 
         return new JSONResponse([
-//            'workout' => $workout
+            'workout_id' => $workoutID
         ]);
     }
 
