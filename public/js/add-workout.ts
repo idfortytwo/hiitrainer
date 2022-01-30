@@ -4,13 +4,162 @@ interface ExerciseModel {
     filename: string
 }
 
+class WorkoutCreator {
+    stagesElem: Element = document.querySelector('#stages');
+    formElem: Element = document.querySelector('form');
+    i = 1;
+
+    constructor() {
+        console.log(this.stagesElem)
+    }
+
+    public addExercise(exercise: ExerciseModel) {
+        this.stagesElem.appendChild(this.getStageElem(exercise));
+    }
+
+    getStageElem(exercise: ExerciseModel) : Element {
+        let container = document.createElement('div');
+        container.id = "stage-" + this.i;
+        container.classList.add('container');
+
+        let image = document.createElement('img');
+        image.src = '../../public/images/' + exercise.filename;
+        image.classList.add('exercise-image');
+        container.appendChild(image);
+
+        let exrName = document.createElement('h3');
+        exrName.textContent = exercise.name;
+        exrName.classList.add('exercise-name')
+        container.appendChild(exrName);
+
+
+        let selectLabel = document.createElement('label');
+        selectLabel.htmlFor = "#stage-type-" + this.i;
+        selectLabel.textContent = 'Stage type';
+        selectLabel.classList.add('stage-type-label');
+        container.appendChild(selectLabel);
+
+        let selectDiv = document.createElement('div');
+        selectDiv.classList.add('stage-type-input')
+
+        let select = document.createElement('select');
+        select.name = 'stage_type_' + this.i;
+        select.id = 'stage-type-' + this.i;
+
+        let durOption = document.createElement('option');
+        durOption.value = 'duration';
+        durOption.textContent = 'Duration'
+        select.add(durOption);
+
+        let repsOption = document.createElement('option');
+        repsOption.value = 'reps';
+        repsOption.textContent = 'Reps'
+        select.add(repsOption);
+
+        selectDiv.appendChild(select);
+        container.appendChild(selectDiv);
+
+
+
+
+        let durLabel = document.createElement('label');
+        durLabel.htmlFor = 'stage-data-input-' + this.i;
+        durLabel.textContent = 'Duration';
+        durLabel.classList.add('stage-data-label');
+        container.appendChild(durLabel);
+
+        let durInputDiv = document.createElement('div');
+        durInputDiv.classList.add('stage-data-input');
+
+        let durInput = document.createElement('input')
+        durInput.id = 'stage-data-input-' + this.i;
+        durInput.type = 'time';
+        durInput.min = '00:00:00';
+        durInput.name = 'stage_data_' + this.i;
+        durInput.step = '2';
+        durInput.value = '00:00:00';
+        durInputDiv.appendChild(durInput)
+        container.appendChild(durInputDiv);
+
+
+        let repsLabel = document.createElement('label');
+        repsLabel.htmlFor = 'stage-data-input-' + this.i;
+        repsLabel.textContent = 'Reps';
+        repsLabel.classList.add('stage-data-label');
+        container.appendChild(repsLabel);
+
+        let repsInputDiv = document.createElement('div');
+        repsInputDiv.classList.add('stage-data-input');
+
+        let repsInput = document.createElement('input')
+        repsInput.id = 'stage-data-input-' + this.i;
+        repsInput.type = 'number';
+        repsInput.name = '';
+        repsInput.classList.add('stage-data-input');
+        repsInputDiv.appendChild(repsInput);
+        container.appendChild(repsInputDiv);
+
+
+
+        const i = this.i;
+
+        WorkoutCreator.showDuration(durLabel, durInput, repsLabel, repsInput, i);
+        select.onchange = function(){
+            if (select.value == 'duration') {
+                WorkoutCreator.showDuration(durLabel, durInput, repsLabel, repsInput, i);
+            } else if (select.value == 'reps') {
+                WorkoutCreator.showReps(durLabel, durInput, repsLabel, repsInput, i);
+            }
+        };
+
+        let removeStageButton = document.createElement('button');
+        removeStageButton.classList.add('stage-remove');
+        removeStageButton.textContent = 'Remove stage';
+        removeStageButton.onclick = function(){
+            container.remove();
+        }
+        container.appendChild(removeStageButton);
+        removeStageButton.innerHTML = '<i class="fas fa-times"></i>';
+
+        this.i++;
+        return container;
+    }
+
+    static showDuration(durLabel, durInput, repsLabel, repsInput, i) {
+        durLabel.style['visibility'] = 'visible';
+        durInput.style['visibility'] = 'visible';
+        durInput.setAttribute('required', '')
+        durInput.name = 'stage_data_' + i;
+
+        repsLabel.style['visibility'] = 'hidden';
+        repsInput.style['visibility'] = 'hidden';
+        repsInput.removeAttribute('required')
+        repsInput.name = '';
+    }
+
+    static showReps(durLabel, durInput, repsLabel, repsInput, i) {
+        durLabel.style['visibility'] = 'hidden';
+        durInput.style['visibility'] = 'hidden';
+        durInput.removeAttribute('required')
+        durInput.name = '';
+
+        repsLabel.style['visibility'] = 'visible';
+        repsInput.style['visibility'] = 'visible';
+        repsInput.setAttribute('required', '')
+        repsInput.name = 'stage_data_' + i;
+    }
+}
+
 class ExerciseList {
     exerciseListElem: Element = document.querySelector('.exercise-list');
+
+    workoutCreator: WorkoutCreator;
     allExercises: ExerciseModel[];
     exercises: ExerciseModel[];
     currentExercisesIDs;
 
-    constructor() {
+    constructor(workoutCreator: WorkoutCreator) {
+        this.workoutCreator = workoutCreator;
         this.currentExercisesIDs = [];
         this.fetchExercises().then(() => {
             this.render();
@@ -19,12 +168,12 @@ class ExerciseList {
 
     fetchExercises() {
         return fetch('/exercises', { method: 'GET' })
-        .then(response => response.json())
-        .then((data: { exercises: ExerciseModel[] }) => {
-            // @ts-ignore
-            this.exercises = data.exercises;
-            this.allExercises = data.exercises;
-        })
+            .then(response => response.json())
+            .then((data: { exercises: ExerciseModel[] }) => {
+                // @ts-ignore
+                this.exercises = data.exercises;
+                this.allExercises = data.exercises;
+            })
     }
 
     public render() {
@@ -93,6 +242,9 @@ class ExerciseList {
 
     renderExercise(exercise: ExerciseModel) {
         let exerciseElem = this.getExerciseElem(exercise);
+        exerciseElem.addEventListener('click', () => {
+            this.workoutCreator.addExercise(exercise);
+        });
         this.exerciseListElem.appendChild(exerciseElem);
     }
 
@@ -109,14 +261,52 @@ class ExerciseList {
         exrNameElem.textContent = exercise.name;
         exrElem.appendChild(exrNameElem);
 
+        let addElem = document.createElement('h2');
+        addElem.textContent = '+';
+        addElem.style['position'] = 'fixed';
+        addElem.style['left'] = '50%';
+        // addElem.style['top'] = '0%';
+        addElem.style['transform'] = 'translate(-50%, -50%)';
+        exrElem.appendChild(addElem);
+
         return exrElem;
     }
 }
 
-let exerciseList = new ExerciseList();
+let workoutCreator = new WorkoutCreator();
+let exerciseList = new ExerciseList(workoutCreator);
 
 const exerciseFilter = document.querySelector('#exercise-filter-input');
 exerciseFilter.addEventListener('input', (e: Event) => {
     let exerciseName = (e.target as HTMLTextAreaElement).value;
     exerciseList.rerender(exerciseName)
 });
+
+const formElem = document.querySelector('form');
+formElem.onsubmit = function(e){
+    e.preventDefault();
+
+    let formData = new FormData(document.querySelector('form'));
+
+    let formDataMap: { [p: string]: File | string } = Object.fromEntries(formData.entries());
+    let groupedData = groupFormData(formDataMap);
+    console.log(groupedData);
+
+    let jsonData = JSON.stringify(groupedData)
+
+    fetch('/postData', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: jsonData
+    })
+        .then(response => response.json())
+        .then((response) => {
+            // console.log(response);
+        });
+}
+
+function groupFormData(formDataMap) {
+    return formDataMap;
+}

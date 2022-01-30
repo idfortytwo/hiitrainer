@@ -14,7 +14,7 @@
 
 .exercises-panel {
     width: 35%;
-    height: 80%;
+    /*height: 80%;*/
     position: relative;
 
     float: right;
@@ -22,6 +22,7 @@
     border-radius: 1rem;
     background-color: var(--main-theme-dark);
     overflow-y: auto;
+    height: 800px;
 }
 
 .exercise-filter {
@@ -31,7 +32,7 @@
 
 .exercise-list {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .exercise {
@@ -40,14 +41,136 @@
     margin: 1rem;
     text-align: center;
     border-radius: 0.5rem;
+    /*width: 100px;*/
+}
+
+.exercise:hover {
+    -webkit-filter: brightness(90%);
+    cursor: pointer;
+}
+
+.exercise h2 {
+    visibility: hidden;
+}
+
+.exercise:hover h2 {
+    visibility: visible;
+    color: var(--main-theme-primary);
+    font-size: 5rem;
 }
 
 .exercise h3 {
     background-color: var(--main-theme-primary);
-    padding: 1rem 0 1rem 0;
-    margin: 0
+    padding: 1rem 0.1rem;
+    font-size: 1.0rem;
+    margin: 0;
+    height: 100%;
 }
 
 .exercise img {
+    box-sizing: border-box;
     width: 100%;
+    padding: 4px;
 }
+
+.workout-title,
+.rest-dur {
+    font-size: 1.5rem;
+    padding-bottom: 25px;
+}
+
+#stages {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.container {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr 1.2fr 0.6fr;
+    grid-template-rows: 0.25fr 0.3fr 0.5fr;
+    gap: 0 0;
+    grid-auto-flow: row;
+    grid-template-areas:
+    "exercise-image exercise-name exercise-name stage-remove"
+    "exercise-image stage-type-label stage-data-label stage-remove"
+    "exercise-image stage-type-input stage-data-input stage-remove";
+
+    background-color: var(--main-theme-dark);
+    margin: 25px;
+    border-radius: 1rem;
+    height: 96px;
+
+    max-width: 500px;
+}
+
+.exercise-name {
+    grid-area: exercise-name;
+    border-bottom: 1px solid var(--main-theme-primary);
+    margin: 0 0 8px;
+    padding-bottom: 8px;
+    padding-top: 10px;
+}
+
+
+.exercise-image {
+    grid-area: exercise-image;
+    /*height: 100%;*/
+    height: 96px;
+    margin: auto 6px;
+    /*display: none;*/
+}
+
+.stage-type-label {
+    grid-area: stage-type-label;
+}
+
+.stage-type-input {
+    grid-area: stage-type-input;
+    /*margin: 1rem;*/
+}
+
+.stage-data-label {
+    grid-area: stage-data-label;
+}
+
+.stage-data-input {
+    grid-area: stage-data-input;
+    width: 69px;
+    min-width: 69px;
+}
+
+.stage-remove {
+    grid-area: stage-remove;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: var(--main-theme-primary);
+    cursor: pointer;
+}
+
+
+html, body , .container {
+    height: 100%;
+    margin: 0;
+}
+
+/* For presentation only, no need to copy the code below */
+
+.container * {
+    /*border: 1px solid red;*/
+    /*position: relative;*/
+}
+
+/*.container *:after {*/
+/*    content:attr(class);*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    display: grid;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*}*/
