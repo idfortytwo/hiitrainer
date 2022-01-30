@@ -3,10 +3,12 @@
 namespace DB\Repo;
 
 use DB\Models\Stage;
+use Exception;
 use PDO;
 
 use DB\Models\Exercise;
 use DB\Models\Workout;
+use PDOException;
 
 class WorkoutRepository extends Repository {
     public function getWorkouts() : array {
@@ -111,46 +113,55 @@ class WorkoutRepository extends Repository {
     }
 
     public function addWorkout(string $title, int $difficultyID, int $focusID, int $typeID,
-                               int $setRestDuration, int $setCount) : int {
-        $stmt = $this->database->connect();
-        $stmt = $stmt->prepare("
+                               int $setRestDuration, int $setCount, array $stages) : int {
+        $conn = $this->database->connect();
+        $conn->beginTransaction();
+
+        try {
+            $stmt = $conn->prepare("
         insert into workout (title, difficulty_id, focus_id, type_id, set_rest_duration, set_count) 
         values (:title, :difficulty_id, :focus_id, :type_id, :set_rest_duration, :set_count)
         returning id; 
         ");
 
-        $stmt->bindValue(':title', $title);
-        $stmt->bindValue(':difficulty_id', $difficultyID);
-        $stmt->bindValue(':focus_id', $focusID);
-        $stmt->bindValue(':type_id', $typeID);
-        $stmt->bindValue(':set_rest_duration', $setRestDuration);
-        $stmt->bindValue(':set_count', $setCount);
-        $stmt->execute();
+            $stmt->bindValue(':title', $title);
+            $stmt->bindValue(':difficulty_id', $difficultyID);
+            $stmt->bindValue(':focus_id', $focusID);
+            $stmt->bindValue(':type_id', $typeID);
+            $stmt->bindValue(':set_rest_duration', $setRestDuration);
+            $stmt->bindValue(':set_count', $setCount);
+            $stmt->execute();
 
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        return $stmt->fetch()['id'];
-    }
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $workoutID = $stmt->fetch()['id'];
 
-    public function addStages(array $stages, int $workoutID) {
-        $stmt = $this->database->connect();
-        $query = 'insert into exercise_workout_map (wkt_id, exr_id, "order", stage_type_id, stage_data) values';
+            $query = 'insert into exercise_workout_map (wkt_id, exr_id, "order", stage_type_id, stage_data) values';
 
-        for ($i = 0; $i < count($stages); $i++) {
-            $query .= "(:wkt_id_{$i}, :exr_id_{$i}, :order_{$i}, :stage_type_id_{$i}, :stage_data_{$i}), ";
+            for ($i = 0; $i < count($stages); $i++) {
+                $query .= "(:wkt_id_{$i}, :exr_id_{$i}, :order_{$i}, :stage_type_id_{$i}, :stage_data_{$i}), ";
+            }
+            $query = rtrim($query, ', ');
+            $query .= ';';
+            $stmt = $conn->prepare($query);
+
+            $i = 0;
+            foreach ($stages as $order => $stage) {
+                $stmt->bindValue(":wkt_id_{$i}", $workoutID);
+                $stmt->bindValue(":exr_id_{$i}", $stage['exercise_id']);
+                $stmt->bindValue(":order_{$i}", $order);
+                $stmt->bindValue(":stage_type_id_{$i}", $stage['stage_type_id']);
+                $stmt->bindValue(":stage_data_{$i}", $stage['stage_data']);
+                $i++;
+            }
+
+            $stmt->execute();
+        } catch (PDOException $e) {
+            $conn->rollBack();
+            throw $e;
         }
-        $query = rtrim($query, ', ');
-        $query .= ';';
-        $stmt = $stmt->prepare($query);
 
-        $i = 0;
-        foreach ($stages as $order => $stage) {
-            $stmt->bindValue(":wkt_id_{$i}", $workoutID);
-            $stmt->bindValue(":exr_id_{$i}", $stage['exercise_id']);
-            $stmt->bindValue(":order_{$i}", $order);
-            $stmt->bindValue(":stage_type_id_{$i}", $stage['stage_type_id']);
-            $stmt->bindValue(":stage_data_{$i}", $stage['stage_data']);
-            $i++;
-        }
-        $stmt->execute();
+        $conn->commit();
+
+        return $workoutID;
     }
 }

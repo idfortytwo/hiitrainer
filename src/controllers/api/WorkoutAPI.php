@@ -3,7 +3,9 @@
 namespace Controllers\API;
 
 use Controllers\Controller;
+use Exception;
 use HTTP\Responses\JSONResponse;
+use PDOException;
 use Routing\Route;
 use DB\Repo\WorkoutRepository;
 
@@ -36,15 +38,18 @@ class WorkoutAPI implements Controller {
         $focusID = $dal->getWorkoutFocusID($input['focus']);
         $setRestDuration = $input['set_rest_duration'];
         $setCount = $input['set_count'];
-
-        $workoutID = $dal->addWorkout($title, $difficultyID, $focusID, $typeID, $setRestDuration, $setCount);
-
         $stages = $input['stages'];
-        $dal->addStages($stages, $workoutID);
 
-        return new JSONResponse([
-            'workout_id' => $workoutID
-        ]);
+        try {
+            $workoutID = $dal->addWorkout($title, $difficultyID, $focusID, $typeID, $setRestDuration, $setCount, $stages);
+            return new JSONResponse([
+                'workout_id' => $workoutID
+            ]);
+        } catch (PDOException $e) {
+            return new JSONResponse([
+                'error_msg' => $e->getMessage()
+            ], 400);
+        }
     }
 
     /**
@@ -65,5 +70,18 @@ class WorkoutAPI implements Controller {
         $workout = $dal->getWorkout($id);
 
         return new JSONResponse(['workout' => $workout]);
+    }
+
+    /**
+     * @Route(path="/postData", methods={"POST"})
+     */
+    public function getPostData(): JSONResponse {
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, TRUE);
+//        var_dump($input);
+
+        return new JSONResponse([
+            'inputJson' => $inputJSON
+        ]);
     }
 }

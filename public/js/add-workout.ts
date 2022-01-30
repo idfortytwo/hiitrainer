@@ -9,9 +9,7 @@ class WorkoutCreator {
     formElem: Element = document.querySelector('form');
     i = 1;
 
-    constructor() {
-        console.log(this.stagesElem)
-    }
+    constructor() {}
 
     public addExercise(exercise: ExerciseModel) {
         this.stagesElem.appendChild(this.getStageElem(exercise));
@@ -21,6 +19,12 @@ class WorkoutCreator {
         let container = document.createElement('div');
         container.id = "stage-" + this.i;
         container.classList.add('container');
+
+        let hiddenExrID = document.createElement('input');
+        hiddenExrID.type = 'hidden';
+        hiddenExrID.value = String(exercise.id);
+        hiddenExrID.name = 'stage_exid_' + this.i;
+        container.appendChild(hiddenExrID);
 
         let image = document.createElement('img');
         image.src = '../../public/images/' + exercise.filename;
@@ -74,10 +78,10 @@ class WorkoutCreator {
         let durInput = document.createElement('input')
         durInput.id = 'stage-data-input-' + this.i;
         durInput.type = 'time';
-        durInput.min = '00:00:00';
+        durInput.min = '00:00:01';
         durInput.name = 'stage_data_' + this.i;
-        durInput.step = '2';
-        durInput.value = '00:00:00';
+        durInput.step = '1';
+        durInput.value = '00:00:01';
         durInputDiv.appendChild(durInput)
         container.appendChild(durInputDiv);
 
@@ -94,6 +98,7 @@ class WorkoutCreator {
         let repsInput = document.createElement('input')
         repsInput.id = 'stage-data-input-' + this.i;
         repsInput.type = 'number';
+        repsInput.min = '1';
         repsInput.name = '';
         repsInput.classList.add('stage-data-input');
         repsInputDiv.appendChild(repsInput);
@@ -282,19 +287,17 @@ exerciseFilter.addEventListener('input', (e: Event) => {
     exerciseList.rerender(exerciseName)
 });
 
-const formElem = document.querySelector('form');
-formElem.onsubmit = function(e){
+let submitHandler = function(e){
     e.preventDefault();
 
     let formData = new FormData(document.querySelector('form'));
 
-    let formDataMap: { [p: string]: File | string } = Object.fromEntries(formData.entries());
-    let groupedData = groupFormData(formDataMap);
-    console.log(groupedData);
+    let formDataMap: { [p: string]: FormDataEntryValue | string } = Object.fromEntries(formData.entries());
 
+    let groupedData = groupFormData(formDataMap);
     let jsonData = JSON.stringify(groupedData)
 
-    fetch('/postData', {
+    fetch('/workout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -303,10 +306,70 @@ formElem.onsubmit = function(e){
     })
         .then(response => response.json())
         .then((response) => {
-            // console.log(response);
+            console.log(response);
         });
 }
 
-function groupFormData(formDataMap) {
-    return formDataMap;
+const formElem = document.querySelector('form');
+formElem.onsubmit = submitHandler;
+
+function groupFormData(formDataMap: { [key: string]: FormDataEntryValue | string; }) {
+    let groupedData: {} = {
+        ...formDataMap,
+    };
+
+    groupedData['set_rest_duration'] = parseToSeconds(groupedData['set_rest_duration']);
+
+    let stagesMap = {};
+    let orderedStagesMap = {};
+    for (let [field, value] of Object.entries(formDataMap)) {
+        const field_slice = field.slice(0, 10);
+        const id = field.slice(11);
+
+        if (field_slice == 'stage_exid') {
+            delete groupedData[field]
+            if (id in stagesMap)
+                stagesMap[id].exercise_id = Number(value);
+            else
+                stagesMap[id] = { 'exercise_id': value };
+
+        } else if (field_slice == 'stage_data') {
+            delete groupedData[field]
+            if (id in stagesMap)
+                stagesMap[id].stage_data = parseToSeconds(value);
+            else
+                stagesMap[id] = { 'stage_data': parseToSeconds(value) };
+
+        } else if (field_slice == 'stage_type') {
+            delete groupedData[field]
+
+            let stageTypeID = (value == 'duration') ? 1 : 2;
+            if (id in stagesMap)
+                stagesMap[id].stage_type_id = Number(stageTypeID);
+            else {
+                stagesMap[id] = { 'stage_type_id':  Number(stageTypeID) };
+            }
+        }
+    }
+
+    let order = 1;
+    for (let [, stage] of Object.entries(stagesMap)) {
+        orderedStagesMap[order] = stage;
+        order++;
+    }
+    groupedData['stages'] = orderedStagesMap;
+
+    return groupedData;
+}
+
+function parseToSeconds(value) {
+    const pattern = '(\\d\\d):(\\d\\d):(\\d\\d)';
+    const match = value.match(pattern);
+    if (match !== null) {
+        const hours = Number(match[1]);
+        const minutes = Number(match[2]);
+        const seconds = Number(match[3]);
+        return seconds + minutes * 60 + hours * 3600;
+    }
+    return Number(value);
 }

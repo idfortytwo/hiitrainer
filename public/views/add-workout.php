@@ -24,16 +24,63 @@
 
     <div class="creator-panel">
         <div class="workout-panel">
-            <form id="workout-form"">
-                <div class="workout-title">
-                    <label for="workout-title-input">Workout title</label>
-                    <input id="workout-title-input" name="workout-title" type="text">
+            <form id="workout-form">
+                <div class="workout-inputs">
+                    <div class="workout-title">
+                        <label for="workout-title-input">Workout title</label>
+                        <input class="workout-input" id="workout-title-input" name="title" type="text" required>
+                    </div>
+
+                    <div class="workout-type">
+                        <label>
+                            Type
+                            <select class="workout-input" name="type">
+                                <option value="HIIT">HIIT</option>
+                                <option value="cardio">Cardio</option>
+                                <option value="strength">Strength</option>
+                                <option value="stretching">Stretching</option>
+                                <option value="yoga">Yoga</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="workout-difficulty">
+                        <label>
+                            Difficulty
+                            <select class="workout-input" name="difficulty">
+                                <option value="easy">Easy</option>
+                                <option value="normal">Normal</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="workout-focus">
+                        <label>
+                            Focus
+                            <select class="workout-input" name="focus">
+                                <option value="lower body">Lower body</option>
+                                <option value="core">Core</option>
+                                <option value="upper body">Upper body</option>
+                                <option value="full body">Full body</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="workout-set-count">
+                        <label>
+                            Sets
+                            <input class="workout-input" type="number" min="1" value="1" name="set_count" required>
+                        </label>
+                    </div>
+
+                    <div class="rest-dur">
+                        <label for="rest-dur-input">Rest</label>
+                        <input class="workout-input" id="rest-dur-input" name="set_rest_duration" type="time" value="00:00:01" min="00:00:01" step="1">
+                    </div>
                 </div>
 
-                <div class="rest-dur">
-                    <label for="rest-dur-input">Set rest duration</label>
-                    <input id="rest-dur-input" name="rest-duration" type="time" value="00:00:00" min="00:00:00" step="1">
-                </div>
+                <h2>Stages</h2>
 
                 <div id="stages">
 <!--                    <li id="stage-1">-->

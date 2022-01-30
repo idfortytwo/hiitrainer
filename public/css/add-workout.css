@@ -74,15 +74,53 @@
 }
 
 .workout-title,
+.workout-type,
+.workout-difficulty,
+.workout-focus,
+.workout-set-count,
 .rest-dur {
     font-size: 1.5rem;
-    padding-bottom: 25px;
+    /*margin-right: 20px;*/
+}
+
+.workout-inputs {
+    background-color: var(--main-theme-dark);
+    display: flex;
+    margin-right: 15px;
+    margin-bottom: 25px;
+    border-radius: 1rem;
+    padding: 20px;
+}
+
+.workout-inputs select,
+.workout-inputs input {
+    border: none;
+    /*max-width: 100px;*/
+}
+
+.workout-title input {
+    background-color: var(--main-theme-dark);
+    border-bottom: 1px solid var(--main-theme-primary);
+    color: var(--main-theme-light);
+    font-size: 1.4rem;
+    max-width: 200px;
+}
+
+.workout-set-count input {
+    max-width: 50px;
+}
+
+.workout-panel h2 {
 }
 
 #stages {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+#submitWorkout {
+    margin-top: 50px;
 }
 
 
@@ -155,22 +193,3 @@ html, body , .container {
     height: 100%;
     margin: 0;
 }
-
-/* For presentation only, no need to copy the code below */
-
-.container * {
-    /*border: 1px solid red;*/
-    /*position: relative;*/
-}
-
-/*.container *:after {*/
-/*    content:attr(class);*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*    display: grid;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*}*/
