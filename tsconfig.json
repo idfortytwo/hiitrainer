@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "sourceMap": true,
+        "target": "esnext",
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
