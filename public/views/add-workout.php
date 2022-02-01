@@ -13,11 +13,7 @@
 </head>
 
 <body>
-<header>
-    <span class="nav-item">HIITrainer</span>
-    <!--suppress HtmlUnknownTarget -->
-    <a class="nav-item" href="/workouts/">Workouts</a>
-</header>
+<?php include 'header.php'; ?>
 
 <main class="content">
     <h1>Workout creator</h1>
@@ -83,23 +79,6 @@
                 <h2 id="stages-label">Stages</h2>
 
                 <div id="stages">
-<!--                    <li id="stage-1">-->
-<!--                        <img src="/public/images/march_steps.png" alt="">-->
-<!--                        <h3>March steps</h3>-->
-<!---->
-<!--                        <label for="stage-type-1">Stage type</label>-->
-<!--                        <select name="Stage type" class="stage-type" id="stage-type-1">-->
-<!--                            <option value="duration">Duration</option>-->
-<!--                            <option value="reps">Reps</option>-->
-<!--                        </select>-->
-<!---->
-<!--                        <div id="stage-data-1">-->
-<!--                            <label for="stage-data-input-1">Exercise</label>-->
-<!--                            <input id="stage-data-input-1" type="number"/>-->
-<!--                        </div>-->
-<!---->
-<!--                        <button>Remove stage</button>-->
-<!--                    </li>-->
                 </div>
 
                 <button id="submitWorkout" type="submit">Submit</button>
@@ -115,7 +94,6 @@
         </div>
     </div>
 </main>
-
 
 </body>
 

@@ -28,13 +28,46 @@ a {
 }
 
 header {
-    display: flex;
     padding: 0.5rem;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.5rem;
     background-color: var(--main-theme-dark);
+    height: 30px;
 }
+
+header nav {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+}
+
+.header-left {
+    justify-content: flex-start;
+    flex: 1;
+    font-size: 1.3rem;
+}
+
+.header-left a {
+    margin-right: 15px;
+}
+
+.header-mid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+    align-items: flex-end;
+    font-size: 1.6rem;
+}
+
 
 main {
     /*display: flex;*/
@@ -46,4 +79,3 @@ main {
     /*height: 90vh;*/
     width: 100%;
 }
-

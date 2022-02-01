@@ -16,11 +16,7 @@
 </head>
 
 <body>
-<header>
-    <span class="nav-item">HIITrainer</span>
-    <!--suppress HtmlUnknownTarget -->
-    <a class="nav-item" href="/workouts/">Workouts</a>
-</header>
+<?php include 'header.php'; ?>
 
 <main class="content">
     <div id="sets-completed">
@@ -38,11 +34,9 @@
                 <ul class="splide__list">
                     <?php /** @var \DB\Models\Workout $workout */
                     foreach ($workout->getStages() as $stage): ?>
-
                         <li class="splide__slide">
-                            <img src="/public/images/<?=$stage->getExercise()->getFilename();?>">
+                            <img src="/public/images/<?=$stage->getExercise()->getFilename();?>" alt="">
                         </li>
-
                     <?php endforeach; ?>
                 </ul>
             </div>
@@ -53,11 +47,9 @@
                 <ul class="splide__list">
                     <?php /** @var \DB\Models\Workout $workout */
                     foreach ($workout->getStages() as $stage): ?>
-
                         <li class="splide__slide thumbnail-slide">
-                            <img src="/public/images/<?=$stage->getExercise()->getFilename();?>">
+                            <img src="/public/images/<?=$stage->getExercise()->getFilename();?>" alt="">
                         </li>
-
                     <?php endforeach; ?>
                 </ul>
             </div>

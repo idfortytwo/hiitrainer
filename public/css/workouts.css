@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
     grid-template-columns: repeat(3, 1fr);
+    width: 100%;
 }
 
 @media (max-width: 600px) {
@@ -30,28 +31,54 @@
 
 .workout-item .tag-line {
     padding: 0.25rem;
-    gap: 0.5rem;
+    gap: 0.25rem;
     top: 0.25rem;
     left: 0.25rem;
     position: absolute;
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
+    flex-wrap: wrap;
 }
 
 .tag-line .tag {
-    padding: 0.25rem;
     border-radius: 0.3rem;
     background-color: var(--main-theme-dark);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    margin-right: auto;
+    padding: 0.25rem 0.5rem;
 }
 
+.tag img {
+    height: 24px;
+    margin-right: 4px;
+}
+
+.workout-item .action-buttons {
+    padding: 0.25rem;
+    gap: 0.25rem;
+    top: 0.25rem;
+    right: 0.25rem;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.action-buttons .action-button {
+    border-radius: 0.3rem;
+    background-color: var(--main-theme-dark);
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    padding: 0.25rem 0.5rem;
+}
 
 .workout-item .image {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
+    height: 192px;
+    object-fit: contain;
+    background-color: var(--main-theme-light);
 }
 
 .workout-item .title {

@@ -11,11 +11,7 @@
 </head>
 
 <body>
-    <header>
-        <span class="nav-item">HIITrainer</span>
-        <!--suppress HtmlUnknownTarget -->
-        <a class="nav-item" href="/workouts/">Workouts</a>
-    </header>
+    <?php include 'header.php'; ?>
 
     <main class="content">
         <h1>Workouts</h1>
@@ -32,6 +28,11 @@
                         <div class="tag">Focus: <?=$workout->getFocus();?></div>
                         <div class="tag">Difficulty: <?=$workout->getDifficulty();?></div>
                     </div>
+                    <div class="action-buttons">
+                        <div class="action-button"><i class="fas fa-edit"></i></div>
+                        <div class="action-button"><i class="far fa-trash-alt"></i></div>
+                        <div class="action-button"><i class="far fa-heart"></i></i></div>
+                    </div>
                     <div class="title"><?= $workout->getTitle() ?></div>
                 </div>
             </a>
@@ -39,7 +40,6 @@
 
         </div>
     </main>
-
 </body>
 
 </html>
