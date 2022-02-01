@@ -309,11 +309,25 @@ function postWorkout(jsonData) {
             'Content-Type': 'application/json'
         },
         body: jsonData
+    }).then(response => {
+        if (response.status === 200) {
+            response.json().then(() => {
+                alert('Successfully created')
+            })
+        } else if (response.status === 400) {
+            response.json().then((json: {'error_msg': string}) => {
+                if (json.error_msg.indexOf('duplicate key') !== -1) {
+                    alert('Workout with such name already exists')
+                } else {
+                    console.log('Unexpected error:', json)
+                }
+            })
+        } else {
+            response.json().then((json) => {
+                console.log('Unexpected error:', json)
+            })
+        }
     })
-        .then(response => response.json())
-        .then((response) => {
-            console.log(response);
-        });
 }
 
 const formElem = document.querySelector('form');
