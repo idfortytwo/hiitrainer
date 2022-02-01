@@ -291,12 +291,18 @@ let submitHandler = function(e){
     e.preventDefault();
 
     let formData = new FormData(document.querySelector('form'));
-
     let formDataMap: { [p: string]: FormDataEntryValue | string } = Object.fromEntries(formData.entries());
 
-    let groupedData = groupFormData(formDataMap);
-    let jsonData = JSON.stringify(groupedData)
+    try {
+        const groupedData = groupFormData(formDataMap);
+        const jsonData = JSON.stringify(groupedData)
+        postWorkout(jsonData);
+    } catch (e) {
+        alert('Add at least one stage')
+    }
+}
 
+function postWorkout(jsonData) {
     fetch('/workout', {
         method: 'POST',
         headers: {
@@ -350,6 +356,10 @@ function groupFormData(formDataMap: { [key: string]: FormDataEntryValue | string
                 stagesMap[id] = { 'stage_type_id':  Number(stageTypeID) };
             }
         }
+    }
+
+    if (Object.keys(stagesMap).length === 0) {
+        throw new Error('no stages');
     }
 
     let order = 1;

@@ -80,7 +80,7 @@
                     </div>
                 </div>
 
-                <h2>Stages</h2>
+                <h2 id="stages-label">Stages</h2>
 
                 <div id="stages">
 <!--                    <li id="stage-1">-->
