@@ -19,9 +19,9 @@ searchButton.addEventListener('click', () => {
     const parsedData = parseFormData(formDataMap);
     const jsonData = JSON.stringify(parsedData);
 
-    let fetchResult;
+    let fetchPromise;
     if (jsonData != '{}') {
-        fetchResult = fetch('/workouts/filtered', {
+        fetchPromise = fetch('/workouts/filtered', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ searchButton.addEventListener('click', () => {
             body: jsonData
         });
     } else {
-        fetchResult = fetch('/api/workouts', {
+        fetchPromise = fetch('/api/workouts', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -37,7 +37,8 @@ searchButton.addEventListener('click', () => {
         });
     }
 
-    fetchResult.then(response => response.json())
+    fetchPromise
+        .then(response => response.json())
         .then((json: {'workouts': WorkoutModel[]}) => {
             rerenderWorkouts(json.workouts);
         })
