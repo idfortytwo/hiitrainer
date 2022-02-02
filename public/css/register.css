@@ -1,0 +1,78 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-container {
+    width: 50%;
+    margin: auto;
+}
+
+form.login, form.register {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+    background-color: var(--main-theme-light);
+    box-shadow: 0px 6px 6px #00000029;
+    border: 1px solid #707070;
+    border-radius: 33px;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    background-color: var(--main-theme-dark);
+    display: flex;
+    flex-direction: row;
+    margin-right: 15px;
+    margin-bottom: 25px;
+    border-radius: 1rem;
+    padding: 20px;
+}
+
+span {
+    margin-right: 20px;
+    font-size: 1.2rem;
+}
+
+input {
+    margin-left: auto;
+}
+
+button {
+    background-color: var(--main-theme-dark);
+    color: white;
+    border-color: var(--main-theme-dark);
+    border-width: 1px;
+    border-radius: 1rem;
+    max-height: 75px;
+    font-size: 22px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 20px auto auto;
+}
+
+.no-valid {
+    border: 3px solid red;
+    border-radius: 1em;
+    box-shadow: 0 0 0.2em red;
+    outline: none;
+}
+
+.user-exists-message {
+    background-color: #fa4848;
+    margin-right: 15px;
+    margin-bottom: 25px;
+    margin-top: 25px;
+
+    border-radius: 1rem;
+    padding: 0 20px;
+}

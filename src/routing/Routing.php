@@ -2,8 +2,10 @@
 
 namespace Routing;
 
+use Controllers\API\AuthAPI;
 use Controllers\API\ExerciseAPI;
 use Controllers\API\WorkoutAPI;
+use Controllers\Renderers\AuthRenderer;
 use Controllers\Renderers\DefaultRenderer;
 use Controllers\Renderers\WorkoutRenderer;
 use HTTP\Requests\Request;
@@ -19,7 +21,9 @@ class Routing {
             new DefaultRenderer(),
             new ExerciseAPI(),
             new WorkoutAPI(),
-            new WorkoutRenderer()
+            new WorkoutRenderer(),
+            new AuthRenderer(),
+            new AuthAPI()
         ];
     }
 
