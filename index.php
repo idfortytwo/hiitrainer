@@ -7,6 +7,7 @@ spl_autoload_register();
 use HTTP\Requests\Request;
 use Routing\Routing;
 
+session_start();
 
 $router = new Routing();
 $router->setup();

@@ -67,7 +67,7 @@ button {
     outline: none;
 }
 
-.user-exists-message {
+.error-message {
     background-color: #fa4848;
     margin-right: 15px;
     margin-bottom: 25px;

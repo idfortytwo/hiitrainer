@@ -2,10 +2,11 @@
 
 namespace DB\Repo;
 
+use DB\Models\User;
 use PDO;
 
 class AuthRepository extends Repository {
-    public function addUser(string $email, string $passwordHash) : int {
+    public function addUser(string $email, string $passwordHash) : User {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
         INSERT INTO users (email, pass_hash, type_id)
@@ -21,6 +22,28 @@ class AuthRepository extends Repository {
         $stmt->execute();
 
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
-        return $stmt->fetch()['id'];
+        $userID = $stmt->fetch()['id'];
+
+        return User::construct($userID, 'user', $email, $passwordHash);
+    }
+
+    public function getUser(string $email) : User|null {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+        SELECT users.id as id, type, email, pass_hash as password
+        FROM users
+        JOIN user_type ut on users.type_id = ut.id
+        WHERE email = :email;
+        ");
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_CLASS, User::class);
+        $user = $stmt->fetch();
+
+        if ($user == null) {
+            return null;
+        }
+        return $user;
     }
 }
