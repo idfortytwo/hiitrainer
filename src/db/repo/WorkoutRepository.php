@@ -25,6 +25,90 @@ class WorkoutRepository extends Repository {
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $rs = $stmt->fetchAll();
 
+        return $this->parseWorkoutsResultSet($rs);
+    }
+
+    public function getFilteredWorkouts(string $title=null,
+                                        array $types=null,
+                                        array $difficulties=null,
+                                        array $focuses=null): array {
+        $stmt = $this->database->connect();
+        $query = "
+        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
+        from workout as wkt
+             join workout_difficulty wd on wd.id = wkt.difficulty_id
+             join workout_type wt on wt.id = wkt.focus_id
+             join workout_focus wf on wf.id = wkt.focus_id
+        where 
+        ";
+
+        $boundParams = array();
+        $paramCount = 0;
+        $filterCount = 0;
+
+        if ($title != null) {
+            $query .= "lower(title) like ?";
+            $boundParams[] = [1, '%'.$title.'%', PDO::PARAM_STR];
+            $filterCount++;
+            $paramCount++;
+        }
+
+        if ($types != null) {
+            $typesQuery = implode(',', array_fill(0, count($types), '?'));
+
+            if ($filterCount > 0)
+                $query .= ' and ';
+            $query .= 'type in (' . $typesQuery . ')';
+
+            foreach ($types as $type) {
+                $boundParams[] = [($paramCount+1), $type, PDO::PARAM_STR];
+                $paramCount++;
+            }
+            $filterCount++;
+        }
+
+        if ($difficulties != null) {
+            $difficultiesQuery = implode(',', array_fill(0, count($difficulties), '?'));
+
+            if ($filterCount > 0)
+                $query .= ' and ';
+            $query .= 'difficulty in (' . $difficultiesQuery . ')';
+
+            foreach ($difficulties as $difficulty) {
+                $boundParams[] = [($paramCount+1), $difficulty, PDO::PARAM_STR];
+                $paramCount++;
+            }
+            $filterCount++;
+        }
+
+        if ($focuses != null) {
+            $focusesQuery = implode(',', array_fill(0, count($focuses), '?'));
+
+            if ($filterCount > 0)
+                $query .= ' and ';
+            $query .= 'focus in (' . $focusesQuery . ')';
+
+            foreach ($focuses as $focus) {
+                $boundParams[] = [($paramCount+1), $focus];
+                $paramCount++;
+            }
+        }
+
+        $query .= ';';
+
+        $stmt = $stmt->prepare($query);
+        foreach ($boundParams as [$param, $value]) {
+            $stmt->bindValue($param, $value);
+        }
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll();
+
+        return $this->parseWorkoutsResultSet($rs);
+    }
+
+    protected function parseWorkoutsResultSet($rs): array {
         $workouts = array();
         foreach ($rs as $r) {
             $workout = new Workout($r['id'], $r['title'], $r['type'], $r['difficulty'], $r['focus'], $r['set_count'], $r['set_rest_duration'], $r['image']);
@@ -146,7 +230,7 @@ class WorkoutRepository extends Repository {
 
             $i = 0;
             foreach ($stages as $order => $stage) {
-                $stmt->bindValue(":wkt_id_{$i}", $workoutID);
+                $stmt->bindValue(":wkt_id_$i", $workoutID);
                 $stmt->bindValue(":exr_id_{$i}", $stage['exercise_id']);
                 $stmt->bindValue(":order_{$i}", $order);
                 $stmt->bindValue(":stage_type_id_{$i}", $stage['stage_type_id']);

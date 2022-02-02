@@ -77,9 +77,13 @@ class Workout implements JsonSerializable {
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'type' => $this->type,
+            'difficulty' => $this->difficulty,
+            'focus' => $this->focus,
             'setCount' => $this->setCount,
             'setRestDuration' => $this->setRestDuration,
-            'stages' => $this->stages
+            'stages' => $this->stages,
+            'image' => $this->image
         ];
     }
 }

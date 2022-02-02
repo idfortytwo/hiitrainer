@@ -14,9 +14,13 @@ interface StageModel {
 interface WorkoutModel {
     id: number;
     title: number;
+    type: string;
+    difficulty: string;
+    focus: string;
     setCount: number;
     setRestDuration: number;
     stages: StageModel[];
+    image: string;
 }
 
 

@@ -1,3 +1,79 @@
+.workout-title,
+.workout-type,
+.workout-difficulty,
+.workout-focus {
+    font-size: 1.5rem;
+    margin-right: auto;
+}
+
+.workout-inputs {
+    background-color: var(--main-theme-dark);
+    display: flex;
+    border-radius: 1rem;
+    padding: 20px;
+}
+
+.workout-inputs select,
+.workout-inputs input {
+    border: none;
+}
+
+.workout-title input {
+    background-color: var(--main-theme-dark);
+    border-bottom: 1px solid var(--main-theme-light);
+    color: var(--main-theme-light);
+    font-size: 24px;
+    max-width: 250px;
+}
+
+.diff-icon-down {
+    visibility: hidden;
+}
+
+.collapsible {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-size: 22px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: white;
+    background-color: var(--main-theme-dark);
+}
+
+.collapsible:after {
+    content: '\f078';
+    font-family: FontAwesome, sans-serif;
+    font-size: 18px;
+}
+
+.active:after {
+    content: "\f077";
+    font-family: FontAwesome, sans-serif;
+    font-size: 18px;
+}
+
+.collapsed-content {
+    padding: 0 4px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    font-size: 18px;
+}
+
+.search-button {
+    background-color: var(--main-theme-light);
+    color: var(--main-theme-dark);
+    border-color: var(--main-theme-dark);
+    border-width: 1px;
+    border-radius: 0.5rem;
+    max-height: 50px;
+    font-size: 22px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+
 .workout-list {
     display: inline-grid;
     justify-content: center;

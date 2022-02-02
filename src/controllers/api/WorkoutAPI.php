@@ -24,6 +24,27 @@ class WorkoutAPI implements Controller {
 
 
     /**
+     * @Route(path="/workouts/filtered", methods={"POST"})
+     */
+    public function getFilteredWorkouts(): JSONResponse {
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, TRUE);
+        $title = $input['title'] ?? null;
+        $types = $input['types'] ?? null;
+        $difficulties = $input['difficulties'] ?? null;
+        $focuses = $input['focuses'] ?? null;
+
+
+        $dal = new WorkoutRepository();
+        $workouts = $dal->getFilteredWorkouts($title, $types, $difficulties, $focuses);
+
+        return new JSONResponse([
+            'workouts' => $workouts
+        ]);
+    }
+
+
+    /**
      * @Route(path="/workout", methods={"POST"})
      */
     public function addWorkout(): JSONResponse {
