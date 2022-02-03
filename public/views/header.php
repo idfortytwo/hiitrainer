@@ -3,12 +3,9 @@
 <header>
     <nav>
         <div class="header-left">
-            <!--suppress HtmlUnknownTarget -->
-            <a class="nav-item" href="/workouts/">Workouts</a>
-            <!--suppress HtmlUnknownTarget -->
-            <a class="nav-item" href="/workouts/">Favourites</a>
-            <!--suppress HtmlUnknownTarget -->
-            <a class="nav-item" href="/workouts/creator">Creator</a>
+            <?php /* @var Renderer $renderer*/
+            use Controllers\Renderer;
+            $renderer->getHeaderLinks(); ?>
         </div>
 
         <div class="header-mid">
@@ -16,7 +13,8 @@
         </div>
 
         <div class="header-right">
-            <i class="fas fa-sign-out-alt"></i>
+            <?php /* @var Renderer $renderer*/
+            $renderer->getAuthButtons(); ?>
         </div>
     </nav>
 </header>

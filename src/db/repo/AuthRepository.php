@@ -38,12 +38,19 @@ class AuthRepository extends Repository {
         $stmt->bindValue(':email', $email);
         $stmt->execute();
 
-        $stmt->setFetchMode(PDO::FETCH_CLASS, User::class);
-        $user = $stmt->fetch();
+//        $stmt->setFetchMode(PDO::FETCH_CLASS, User::class);
+//        $user = $stmt->fetch();
+//
+//        if ($user == null) {
+//            return null;
+//        }
+//        return $user;
 
-        if ($user == null) {
-            return null;
-        }
-        return $user;
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetch();
+//
+//        var_dump($rs['id'] . '   ' . $rs['type'] . '   '. $rs['email'].'   '. $rs['password'].'<br>');
+
+        return User::construct($rs['id'], $rs['type'], $rs['email'], $rs['password']);
     }
 }

@@ -51,25 +51,35 @@ class AuthRenderer extends Renderer {
      */
     public function login() {
         $email = $_POST['email'];
+        $password = $_POST['password'];
 
         $dal = new AuthRepository();
-        $user = $dal->getUser($email);
+        $dbUser = $dal->getUser($email);
 
-        if ($user == null) {
+        if ($dbUser == null) {
             return $this->render('login', [
                 'emailIncorrect' => 'true',
                 'passwordIncorrect' => 'false'
             ]);
         }
 
-        $currentUser = $_SESSION['user'];
-        if ($user->getPassword() != $currentUser->getPassword()) {
+        if ($dbUser->getPassword() != $password) {
             return $this->render('login', [
                 'emailIncorrect' => 'false',
                 'passwordIncorrect' => 'true'
             ]);
         }
 
+        $this->saveUser($dbUser);
+
+        return new Redirect('/workouts');
+    }
+
+    /**
+     * @Route(path="/logout", methods={"GET"})
+     */
+    public function logout() {
+        session_destroy();
         return new Redirect('/workouts');
     }
 

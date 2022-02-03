@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<?php //include 'header.php'; ?>
+<?php include 'header.php'; ?>
 
 <main class="content">
 
@@ -31,7 +31,7 @@
                 </label>
                 <label id="l-pass">
                     <span>Password</span>
-                    <input id="pass" name="password" type="password" placeholder="password"required>
+                    <input id="pass" name="password" type="password" placeholder="password" required>
                 </label>
                 <label id="l-pass-conf">
                     <span>Confirm password</span>
