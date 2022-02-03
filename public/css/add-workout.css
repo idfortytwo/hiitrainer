@@ -28,6 +28,7 @@
 .exercise-filter {
     margin: 20px;
     width: auto;
+    font-size: 1.2rem;
 }
 
 .exercise-list {
@@ -119,8 +120,29 @@
     gap: 20px;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+}
+
 #submitWorkout {
-    margin-top: 50px;
+    margin: 20px auto 0 190px;
+    /*margin: auto;*/
+    /*margin: auto auto 25px;*/
+    width: 120px;
+    height: 40px;
+    background-color: var(--main-theme-dark);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: solid 1px #707070;
+    transition: all ease-in-out 200ms;
+}
+
+#submitWorkout:hover {
+    background-color: var(--main-theme-darker);
 }
 
 

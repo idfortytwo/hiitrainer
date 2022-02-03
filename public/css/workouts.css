@@ -71,6 +71,11 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     padding: 0 10px;
     cursor: pointer;
+    transition: all ease-in-out 200ms;
+}
+
+.search-button:hover {
+    -webkit-filter: brightness(90%);
 }
 
 

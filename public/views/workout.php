@@ -19,53 +19,54 @@
 <?php include 'header.php'; ?>
 
 <main class="content">
-    <div id="sets-completed">
-        <span>Sets completed: </span>
-    </div>
+    <div class="workout-layout">
+        <div id="sets-completed">
+            <span>Sets completed: </span>
+        </div>
 
-    <div id="rest-countdown">
-        <span></span>
-    </div>
-    <br>
+<!--        <div id="rest-countdown" class="countdown countdown-hidden">-->
+<!---->
+<!--        </div>-->
 
-    <div id="sliders">
-        <div id="main-slider" class="splide">
-            <div class="splide__track">
-                <ul class="splide__list">
-                    <?php /** @var \DB\Models\Workout $workout */
-                    foreach ($workout->getStages() as $stage): ?>
-                        <li class="splide__slide">
-                            <img src="/public/images/<?=$stage->getExercise()->getFilename();?>" alt="">
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
+        <div id="stage-countdown" class="countdown countdown-hidden">
+        </div>
+
+        <div id="sliders">
+            <div id="main-slider" class="splide">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <?php /** @var \DB\Models\Workout $workout */
+                        foreach ($workout->getStages() as $stage): ?>
+                            <li class="splide__slide">
+                                <img src="/public/images/<?=$stage->getExercise()->getFilename();?>" alt="">
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="thumbnail-slider" class="splide">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <?php /** @var \DB\Models\Workout $workout */
+                        foreach ($workout->getStages() as $stage): ?>
+                            <li class="splide__slide thumbnail-slide">
+                                <img src="/public/images/<?=$stage->getExercise()->getFilename();?>" alt="">
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <div id="thumbnail-slider" class="splide">
-            <div class="splide__track">
-                <ul class="splide__list">
-                    <?php /** @var \DB\Models\Workout $workout */
-                    foreach ($workout->getStages() as $stage): ?>
-                        <li class="splide__slide thumbnail-slide">
-                            <img src="/public/images/<?=$stage->getExercise()->getFilename();?>" alt="">
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        </div>
+        <button id="start-or-stop-button" onclick="workout.startOrStop()">Start set</button>
+
+
+        <section class="workout">
+            <br>
+            <section id="stages-section"></section>
+        </section>
     </div>
-
-    <button id="start-or-stop-button" onclick="workout.startOrStop()">Start set</button>
-
-    <div id="stage-countdown">
-        <span></span>
-    </div>
-
-    <section class="workout">
-        <br>
-        <section id="stages-section"></section>
-    </section>
 </main>
 
 </body>

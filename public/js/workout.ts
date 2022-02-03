@@ -26,8 +26,7 @@ interface WorkoutModel {
 
 
 class Workout {
-    stageCountdownLabel: Element = document.querySelector('#stage-countdown').firstElementChild;
-    restCountdownLabel: Element = document.querySelector('#rest-countdown').firstElementChild;
+    countdownLabel: Element = <HTMLElement>document.querySelector('#stage-countdown');
     setsCompletedLabel: Element = document.querySelector('#sets-completed').firstElementChild;
     startOrTopButton: Element = document.querySelector('#start-or-stop-button');
 
@@ -127,13 +126,15 @@ class Workout {
     }
 
     updateStageCountdownLabel(seconds: number, totalSeconds: number) {
+        this.countdownLabel.classList.remove('countdown-hidden')
         const timeLabel = this.getFormattedTime(seconds);
         const totalTimeLabel = this.getFormattedTime(totalSeconds);
-        this.stageCountdownLabel.textContent = timeLabel + ' / ' + totalTimeLabel;
+        this.countdownLabel.textContent = timeLabel + ' / ' + totalTimeLabel;
     }
 
     clearStageCountdownLabel() {
-        this.stageCountdownLabel.textContent = '';
+        this.countdownLabel.textContent = ' ';
+        this.countdownLabel.classList.add('countdown-hidden')
     }
 
     getFormattedTime(seconds: number) {
@@ -157,6 +158,8 @@ class Workout {
         this.updateRestCountdownLabel(restDuration);
 
         let seconds = restDuration;
+        console.log('removing from rest');
+        this.countdownLabel.classList.remove('countdown-hidden')
         this.updateRestCountdownLabel(seconds);
         this.restTimer = setInterval(() => {
             this.updateRestCountdownLabel(seconds - 1);
@@ -176,12 +179,14 @@ class Workout {
     }
 
     updateRestCountdownLabel(seconds: number) {
+        this.countdownLabel.classList.remove('countdown-hidden')
         const timeLabel = this.getFormattedTime(seconds);
-        this.restCountdownLabel.textContent = 'Rest now ' + timeLabel;
+        this.countdownLabel.textContent = 'Rest now ' + timeLabel;
     }
 
     clearRestCountdownLabel() {
-        this.restCountdownLabel.textContent = '';
+        this.countdownLabel.textContent = ' ';
+        this.countdownLabel.classList.add('countdown-hidden')
     }
 }
 

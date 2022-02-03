@@ -49,8 +49,7 @@ input {
 button {
     background-color: var(--main-theme-dark);
     color: white;
-    border-color: var(--main-theme-dark);
-    border-width: 1px;
+    border: solid 1px var(--main-theme-darker);
     border-radius: 1rem;
     max-height: 75px;
     font-size: 22px;
@@ -58,6 +57,11 @@ button {
     padding: 10px 20px;
     cursor: pointer;
     margin: 20px auto auto;
+    transition: all ease-in-out 200ms;
+}
+
+button:hover {
+    background-color: var(--main-theme-darker);
 }
 
 .no-valid {

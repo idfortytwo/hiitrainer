@@ -18,14 +18,47 @@
     margin: auto auto 25px;
 }
 
+#sliders {
+    margin-top: 25px;
+}
+
+.workout-layout {
+    display: flex;
+    flex-direction: column;
+}
+
 #start-or-stop-button {
     margin: auto auto 25px;
     width: 120px;
     height: 40px;
     background-color: var(--main-theme-dark);
     color: white;
-    border: 2px;
     border-radius: 0.5rem;
     font-weight: bold;
     font-size: 1.2rem;
+    cursor: pointer;
+    border: solid 1px #707070;
+    transition: all ease-in-out 200ms;
+}
+
+#start-or-stop-button:hover {
+    background-color: var(--main-theme-darker);
+}
+
+.countdown {
+    background-color: var(--main-theme-light);
+    color: var(--main-theme-dark);
+    border-radius: 0.5rem;
+    padding: 20px;
+    margin: auto;
+    height: 30px;
+    font-size: 1.4rem;
+    font-weight: 900;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.countdown-hidden {
+    opacity: 0;
 }
