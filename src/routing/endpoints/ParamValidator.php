@@ -39,7 +39,8 @@ class ParamValidator {
         return match ($paramType) {
             'string' => true,
             'int' => filter_var($arg, FILTER_VALIDATE_INT),
-            'float' => filter_var($arg, FILTER_VALIDATE_FLOAT)
+            'float' => filter_var($arg, FILTER_VALIDATE_FLOAT),
+            'bool' => filter_var($arg, FILTER_VALIDATE_BOOL),
         };
     }
 }
