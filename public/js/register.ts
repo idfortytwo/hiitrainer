@@ -12,8 +12,7 @@ let registerHandler = function(e) {
 
 registerForm.onsubmit = registerHandler;
 
-
-const emailUsedMessage = <HTMLElement>document.querySelector('.user-exists-message');
+const emailUsedMessage = <HTMLElement>document.querySelector('.error-message');
 // @ts-ignore
 if (user_exists == 'false') {
     emailUsedMessage.style['display'] = 'none'
