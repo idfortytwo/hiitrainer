@@ -27,7 +27,8 @@
     flex-direction: column;
 }
 
-#start-or-stop-button {
+#start-or-stop-button,
+#next-stage-button {
     margin: auto auto 25px;
     width: 120px;
     height: 40px;
@@ -41,7 +42,8 @@
     transition: all ease-in-out 200ms;
 }
 
-#start-or-stop-button:hover {
+#start-or-stop-button:hover,
+#next-stage-button:hover {
     background-color: var(--main-theme-darker);
 }
 

@@ -38,6 +38,7 @@ class Workout {
     workoutData: WorkoutModel;
     stages: StageModel[];
     stagesCount: number;
+    currentStage;
     currentStageNumber: number;
     setsCompleted: number;
     active: boolean;
@@ -99,11 +100,12 @@ class Workout {
         audio.play();
 
         let stage = this.stages[stageNumber];
-
-        let stageDuration = parseInt(stage.value);
-        this.updateStageCountdownLabel(0, stageDuration);
+        this.currentStage = stage;
 
         if (stage.type == 'duration') {
+            let stageDuration = parseInt(stage.value);
+            this.updateStageCountdownLabel(0, stageDuration);
+
             let seconds = 0;
             this.stageTimer = setInterval(() => {
                 this.updateStageCountdownLabel(seconds + 1, stageDuration);
@@ -115,6 +117,8 @@ class Workout {
 
                 seconds++;
             }, 1000);
+        } else {
+            this.updateStageRepsLabel(stage.value);
         }
     }
 
@@ -135,6 +139,11 @@ class Workout {
         const timeLabel = this.getFormattedTime(seconds);
         const totalTimeLabel = this.getFormattedTime(totalSeconds);
         this.stageInfoLabel.textContent = timeLabel + ' / ' + totalTimeLabel;
+    }
+
+    updateStageRepsLabel(reps) {
+        this.stageInfoLabel.classList.remove('countdown-hidden')
+        this.stageInfoLabel.textContent = 'Reps: ' + reps;
     }
 
     clearStageCountdownLabel() {

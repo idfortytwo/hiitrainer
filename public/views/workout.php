@@ -59,6 +59,9 @@
             </div>
         </div>
 
+        <button id="next-stage-button"
+                onclick="workout.finishStage(workout.currentStage, workout.currentStageNumber)">Next stage</button>
+
         <button id="start-or-stop-button" onclick="workout.startOrStop()">Start set</button>
 
 
