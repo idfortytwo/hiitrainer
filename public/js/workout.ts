@@ -21,6 +21,7 @@ interface WorkoutModel {
     setRestDuration: number;
     stages: StageModel[];
     image: string;
+    isFavourite: boolean;
 }
 
 

@@ -11,6 +11,9 @@ use DB\Models\Workout;
 use PDOException;
 
 class WorkoutRepository extends Repository {
+    /**
+     * @return array<Workout>
+     */
     public function getWorkouts() : array {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
@@ -28,10 +31,17 @@ class WorkoutRepository extends Repository {
         return $this->parseWorkoutsResultSet($rs);
     }
 
+    /**
+     * @param string|null $title
+     * @param array|null $types
+     * @param array|null $difficulties
+     * @param array|null $focuses
+     * @return array<Workout>
+     */
     public function getFilteredWorkouts(string $title=null,
-                                        array $types=null,
-                                        array $difficulties=null,
-                                        array $focuses=null): array {
+                                        array  $types=null,
+                                        array  $difficulties=null,
+                                        array  $focuses=null): array {
         $stmt = $this->database->connect();
         $query = "
         select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
@@ -108,6 +118,10 @@ class WorkoutRepository extends Repository {
         return $this->parseWorkoutsResultSet($rs);
     }
 
+    /**
+     * @param $rs
+     * @return array<Workout>
+     */
     protected function parseWorkoutsResultSet($rs): array {
         $workouts = array();
         foreach ($rs as $r) {
@@ -247,5 +261,46 @@ class WorkoutRepository extends Repository {
         $conn->commit();
 
         return $workoutID;
+    }
+
+    public function getFavouriteWorkoutIDs(int $userID) : array {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+            SELECT workout_id 
+            FROM user_favourite_workout_map
+            WHERE user_id = :user_id;
+        ");
+        $stmt->bindValue(':user_id', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll();
+        $workoutIDs = [];
+        foreach ($rs as $record) {
+            $workoutIDs[] = $record['workout_id'];
+        }
+        return $workoutIDs;
+    }
+
+    public function likeWorkout(int $userID, int $workoutID) : void {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+            INSERT INTO user_favourite_workout_map (user_id, workout_id) 
+            VALUES (:user_id, :workout_id);
+        ");
+        $stmt->bindValue(':user_id', $userID, PDO::PARAM_INT);
+        $stmt->bindValue(':workout_id', $workoutID, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function unlikeWorkout(int $userID, int $workoutID) : void {
+        $stmt = $this->database->connect();
+        $stmt = $stmt->prepare("
+            DELETE FROM user_favourite_workout_map
+            WHERE user_id = :user_id AND workout_id = :workout_id;
+        ");
+        $stmt->bindValue(':user_id', $userID, PDO::PARAM_INT);
+        $stmt->bindValue(':workout_id', $workoutID, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }

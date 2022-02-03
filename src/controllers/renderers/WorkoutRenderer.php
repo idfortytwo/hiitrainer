@@ -4,6 +4,7 @@ namespace Controllers\Renderers;
 
 use Controllers\Renderer;
 use DB\Models\Stage;
+use DB\Models\User;
 use DB\Repo\ExerciseRepository;
 use DB\Repo\WorkoutRepository;
 use HTTP\Responses\JSONResponse;
@@ -16,6 +17,8 @@ class WorkoutRenderer extends Renderer {
     public function workouts() {
         $dal = new WorkoutRepository();
         $workouts = $dal->getWorkouts();
+
+        $this->setFavouriteFlags($workouts);
 
         return $this->render('workouts', ['workouts' => $workouts]);
     }
@@ -40,6 +43,23 @@ class WorkoutRenderer extends Renderer {
         return $this->render('add-workout', [
             'exercises' => $exercises
         ]);
+    }
+
+    protected function setFavouriteFlags(array $workouts) {
+        $dal = new WorkoutRepository();
+
+        /* @var User $user */
+        $user = $_SESSION['user'] ?? null;
+        if ($user != null) {
+            $favWorkoutIDs = $dal->getFavouriteWorkoutIDs($user->getId());
+            foreach ($workouts as $workout) {
+
+                $workoutID = $workout->getId();
+                if (in_array($workoutID, $favWorkoutIDs)) {
+                    $workout->setIsFavourite(true);
+                }
+            }
+        }
     }
 }
 

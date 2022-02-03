@@ -90,24 +90,55 @@ function rerenderWorkouts(workouts) {
 }
 
 let workoutListElem = document.querySelector('.workout-list');
-function renderWorkout(workout) {
+function renderWorkout(workout: WorkoutModel) {
     let workoutElem = document.createElement('div')
     workoutElem.innerHTML = `
-<a href="/workouts/${workout.id}">
     <div class="workout-item">
-        <img class="image" src="${workout.image}" alt="">
+        <a href="/workouts/${workout.id}">
+            <img class="image" src="${workout.image}" alt="">
+        </a>
         <div class="tag-line">
             <div class="tag">Type: ${workout.type}</div>
             <div class="tag">Focus: ${workout.focus}</div>
             <div class="tag">Difficulty: ${workout.difficulty}</div>
         </div>
         <div class="action-buttons">
-            <div class="action-button"><i class="fas fa-edit"></i></div>
-            <div class="action-button"><i class="far fa-trash-alt"></i></div>
-            <div class="action-button"><i class="far fa-heart"></i></i></div>
+            <div onclick="switchLike(${workout.id}, ${workout.isFavourite})" 
+                id="liked-${workout.id}" class="action-button">
+                <i class="${workout.isFavourite ? 'fas' : 'far'} fa-heart"></i>
+            </div>
         </div>
         <div class="title">${workout.title}</div>
-    </div>
-</a>`;
+    </div>`;
     workoutListElem.appendChild(workoutElem);
 }
+
+function switchLike(workoutID: number, isFavourite) {
+    const likedButton = <HTMLButtonElement>document.querySelector("#liked-" + workoutID);
+    if (isFavourite == true) {
+        fetch('/unlike/' + workoutID, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                likedButton.innerHTML = '<i class="far fa-heart"></i>';
+                likedButton.onclick = () => switchLike(workoutID, !isFavourite);
+            }
+        });
+    } else {
+        fetch('/like/' + workoutID, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                likedButton.innerHTML = '<i class="fas fa-heart"></i>';
+                likedButton.onclick = () => switchLike(workoutID, !isFavourite);
+            }
+        });
+    }
+}
+

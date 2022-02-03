@@ -7,7 +7,7 @@
     <title>Workouts</title>
     <link rel="stylesheet" href="/public/css/style.css" type="text/css">
     <link rel="stylesheet" href="/public/css/workouts.css" type="text/css">
-    <script type="module" src="/public/js/workouts.js"></script>
+    <script type="text/javascript" src="/public/js/workouts.js" defer></script>
 </head>
 
 <body>
@@ -105,25 +105,29 @@
         <div class="workout-list">
             <?php /** @var array<\DB\Models\Workout> $workouts */
             foreach ($workouts as $workout): ?>
-
-<a href="<?='/workouts/'.$workout->getId();?>">
-    <div class="workout-item">
-        <img class="image" src="<?= $workout->getImage();?>" alt="">
-        <div class="tag-line">
-            <div class="tag">Type: <?=$workout->getType();?></div>
-            <div class="tag">Focus: <?=$workout->getFocus();?></div>
-            <div class="tag">Difficulty: <?=$workout->getDifficulty();?></div>
-        </div>
-        <div class="action-buttons">
-            <div class="action-button"><i class="fas fa-edit"></i></div>
-            <div class="action-button"><i class="far fa-trash-alt"></i></div>
-            <div class="action-button"><i class="far fa-heart"></i></i></div>
-        </div>
-        <div class="title"><?= $workout->getTitle() ?></div>
-    </div>
-</a>
+                <div class="workout-item">
+                    <a href="<?='/workouts/'.$workout->getId();?>">
+                        <img class="image" src="<?= $workout->getImage();?>" alt="">
+                    </a>
+                    <div class="tag-line">
+                        <div class="tag">Type: <?=$workout->getType();?></div>
+                        <div class="tag">Focus: <?=$workout->getFocus();?></div>
+                        <div class="tag">Difficulty: <?=$workout->getDifficulty();?></div>
+                    </div>
+                    <div class="action-buttons">
+                        <div onclick="switchLike(<?= $workout->getId();?>,
+                                                 <?= $workout->getIsFavourite() ? 'true' : 'false' ;?>)"
+                             id="liked-<?= $workout->getId();?>" class="action-button">
+                            <?php if($workout->getIsFavourite() == true): ?>
+                                <i class="fas fa-heart"></i>
+                            <?php else:?>
+                                <i class="far fa-heart"></i>
+                            <?php endif;?>
+                        </div>
+                    </div>
+                    <div class="title"><?= $workout->getTitle() ?></div>
+                </div>
             <?php endforeach; ?>
-
         </div>
     </main>
 </body>

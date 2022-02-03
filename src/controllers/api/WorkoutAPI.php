@@ -3,8 +3,10 @@
 namespace Controllers\API;
 
 use Controllers\Controller;
+use DB\Models\User;
 use Exception;
 use HTTP\Responses\JSONResponse;
+use HTTP\Responses\Response;
 use PDOException;
 use Routing\Route;
 use DB\Repo\WorkoutRepository;
@@ -38,11 +40,29 @@ class WorkoutAPI implements Controller {
         $dal = new WorkoutRepository();
         $workouts = $dal->getFilteredWorkouts($title, $types, $difficulties, $focuses);
 
+        $this->setFavouriteFlags($workouts);
+
         return new JSONResponse([
             'workouts' => $workouts
         ]);
     }
 
+    protected function setFavouriteFlags(array $workouts) {
+        $dal = new WorkoutRepository();
+
+        /* @var User $user */
+        $user = $_SESSION['user'] ?? null;
+        if ($user != null) {
+            $favWorkoutIDs = $dal->getFavouriteWorkoutIDs($user->getId());
+            foreach ($workouts as $workout) {
+
+                $workoutID = $workout->getId();
+                if (in_array($workoutID, $favWorkoutIDs)) {
+                    $workout->setIsFavourite(true);
+                }
+            }
+        }
+    }
 
     /**
      * @Route(path="/workout", methods={"POST"})
@@ -80,6 +100,8 @@ class WorkoutAPI implements Controller {
         $dal = new WorkoutRepository();
         $workouts = $dal->getWorkouts();
 
+        $this->setFavouriteFlags($workouts);
+
         return new JSONResponse(['workouts' => $workouts]);
     }
 
@@ -104,5 +126,35 @@ class WorkoutAPI implements Controller {
         return new JSONResponse([
             'inputJson' => $inputJSON
         ]);
+    }
+
+    /**
+     * @Route(path="/like/{workoutID}", methods={"POST"})
+     */
+    public function likeWorkout(int $workoutID): Response {
+        /* @var User $user */
+        $user = $_SESSION['user'] ?? null;
+        if ($user != null) {
+            $dal = new WorkoutRepository();
+            $dal->likeWorkout($user->getId(), $workoutID);
+            return new JSONResponse('Successfully liked');
+        } else {
+            return new Response('', 401);
+        }
+    }
+
+    /**
+     * @Route(path="/unlike/{workoutID}", methods={"POST"})
+     */
+    public function unlikeWorkout(int $workoutID): Response {
+        /* @var User $user */
+        $user = $_SESSION['user'] ?? null;
+        if ($user != null) {
+            $dal = new WorkoutRepository();
+            $dal->unlikeWorkout($user->getId(), $workoutID);
+            return new JSONResponse('Successfully unliked');
+        } else {
+            return new Response('', 401);
+        }
     }
 }
