@@ -201,48 +201,10 @@ class ExerciseList {
         }
     }
 
-    // public rerender(exerciseName: string = null) {
-    //     const filteredIDs = this.getFilteredExerciseIDs(exerciseName);
-    //
-    //     this.clear(filteredIDs);
-    //     this.renderNew(filteredIDs);
-    //
-    //     for (const exerciseID of filteredIDs) {
-    //         // this.renderExercise(exercise);
-    //         // console.log(exerciseID)
-    //     }
-    // }
-
-    clear(newExerciseIDs) {
-        let idsToRemove = this.currentExercisesIDs.filter(x => !newExerciseIDs.includes(x));
-        for (const id of idsToRemove) {
-            let exercise = document.querySelector("#exercise-" + id);
-            exercise.remove();
-            this.currentExercisesIDs = this.currentExercisesIDs.filter(e => e !== id)
-
-            // console.log("Deleting: ", "#exercise-" + id, exercise)
-        }
-    }
-
-    renderNew(newExerciseIDs) {
-        let idsToRender = this.exercises.filter(x => newExerciseIDs.includes(x));
-        for (const id of idsToRender) {
-            console.log("Adding:", "#exercise-" + id)
-            // let exercise = document.querySelector("#exercise-" + id);
-            // exercise.remove();
-        }
-    }
-
     getFilteredExercises(exerciseName: string) {
         return this.exercises.filter(exercise => (
             exercise.name.toLowerCase().indexOf(exerciseName.toLowerCase()) !== -1
         ));
-    }
-
-    getFilteredExerciseIDs(exerciseName: string) {
-        return this.exercises.filter(exercise => (
-            exercise.name.toLowerCase().indexOf(exerciseName.toLowerCase()) !== -1
-        )).map(exercise => exercise.id);
     }
 
     renderExercise(exercise: ExerciseModel) {
