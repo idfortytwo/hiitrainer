@@ -29,10 +29,10 @@ abstract class Renderer implements Controller {
         if ($user != null) {
             switch ($user->getType()) {
                 case 'user':
-                    echo '<a class="nav-item" href="/workouts/">Favourites</a>';
+                    echo '<a class="nav-item" href="/workouts?favourite=true"">Favourites</a>';
                     break;
                 case 'admin':
-                    echo '<a class="nav-item" href="/workouts/">Favourites</a>';
+                    echo '<a class="nav-item" href="/workouts?favourite=true">Favourites</a>';
                     echo '<a class="nav-item" href="/workouts/creator">Creator</a>';
                     break;
             }

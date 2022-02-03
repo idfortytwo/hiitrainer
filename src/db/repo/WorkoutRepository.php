@@ -12,17 +12,30 @@ use PDOException;
 
 class WorkoutRepository extends Repository {
     /**
+     * @param bool $onlyFavourites
      * @return array<Workout>
      */
-    public function getWorkouts() : array {
+    public function getWorkouts(bool $onlyFavourites = false, int $userID = 0) : array {
         $stmt = $this->database->connect();
-        $stmt = $stmt->prepare("
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
-        from workout as wkt
-             join workout_difficulty wd on wd.id = wkt.difficulty_id
-             join workout_type wt on wt.id = wkt.focus_id
-             join workout_focus wf on wf.id = wkt.focus_id
-        ");
+        $query = "
+            select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
+            from workout as wkt
+                 join workout_difficulty wd on wd.id = wkt.difficulty_id
+                 join workout_type wt on wt.id = wkt.focus_id
+                 join workout_focus wf on wf.id = wkt.focus_id
+        ";
+
+        if ($onlyFavourites == true) {
+            $query .= "
+                join user_favourite_workout_map ufwm on wkt.id = ufwm.workout_id
+                where user_id = :user_id
+            ";
+        }
+
+        $stmt = $stmt->prepare($query);
+        if ($onlyFavourites == true) {
+            $stmt->bindValue(':user_id', $userID, PDO::PARAM_INT);
+        }
         $stmt->execute();
 
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -38,7 +51,8 @@ class WorkoutRepository extends Repository {
      * @param array|null $focuses
      * @return array<Workout>
      */
-    public function getFilteredWorkouts(string $title=null,
+    public function getFilteredWorkouts(bool $onlyFavourites = false, int $userID = 0,
+                                        string $title=null,
                                         array  $types=null,
                                         array  $difficulties=null,
                                         array  $focuses=null): array {
@@ -49,16 +63,33 @@ class WorkoutRepository extends Repository {
              join workout_difficulty wd on wd.id = wkt.difficulty_id
              join workout_type wt on wt.id = wkt.focus_id
              join workout_focus wf on wf.id = wkt.focus_id
-        where 
         ";
 
         $boundParams = array();
         $paramCount = 0;
         $filterCount = 0;
 
+        if ($onlyFavourites == true) {
+            $query .= "
+                join user_favourite_workout_map ufwm on wkt.id = ufwm.workout_id
+                where user_id = :user_id?
+            ";
+//            $boundParams[] = [1, $userID, PDO::PARAM_INT];
+//            var_dump($boundParams);
+//
+            $filterCount++;
+//            $paramCount++;
+        } else {
+            $query .= " where ";
+        }
+
         if ($title != null) {
+            if ($filterCount > 0)
+                $query .= ' and ';
+
             $query .= "lower(title) like ?";
-            $boundParams[] = [1, '%'.$title.'%', PDO::PARAM_STR];
+            $boundParams[] = [($paramCount+1), '%'.$title.'%', PDO::PARAM_STR];
+
             $filterCount++;
             $paramCount++;
         }
@@ -107,6 +138,9 @@ class WorkoutRepository extends Repository {
         $query .= ';';
 
         $stmt = $stmt->prepare($query);
+        if ($onlyFavourites == true) {
+            $stmt->bindValue(':user_id', $userID);
+        }
         foreach ($boundParams as [$param, $value]) {
             $stmt->bindValue($param, $value);
         }

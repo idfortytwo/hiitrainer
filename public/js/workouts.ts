@@ -19,9 +19,12 @@ searchButton.addEventListener('click', () => {
     const parsedData = parseFormData(formDataMap);
     const jsonData = JSON.stringify(parsedData);
 
+    const showOnlyFavourites = document.documentURI.split('?')[1] == 'favourite=true';
+
     let fetchPromise;
     if (jsonData != '{}') {
-        fetchPromise = fetch('/workouts/filtered', {
+        const url = showOnlyFavourites ? '/workouts/filtered?favourite=true' : '/workouts/filtered';
+        fetchPromise = fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +32,8 @@ searchButton.addEventListener('click', () => {
             body: jsonData
         });
     } else {
-        fetchPromise = fetch('/api/workouts', {
+        const url = showOnlyFavourites ? '/api/workouts?favourite=true' : '/api/workouts';
+        fetchPromise = fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

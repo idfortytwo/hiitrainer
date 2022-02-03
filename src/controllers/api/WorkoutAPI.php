@@ -28,22 +28,29 @@ class WorkoutAPI implements Controller {
     /**
      * @Route(path="/workouts/filtered", methods={"POST"})
      */
-    public function getFilteredWorkouts(): JSONResponse {
+    public function getFilteredWorkouts(bool $favourite = false): JSONResponse {
         $inputJSON = file_get_contents('php://input');
+
         $input = json_decode($inputJSON, TRUE);
         $title = $input['title'] ?? null;
         $types = $input['types'] ?? null;
         $difficulties = $input['difficulties'] ?? null;
         $focuses = $input['focuses'] ?? null;
 
-
         $dal = new WorkoutRepository();
-        $workouts = $dal->getFilteredWorkouts($title, $types, $difficulties, $focuses);
 
-        $this->setFavouriteFlags($workouts);
+        /* @var User $user */
+        $user = $_SESSION['user'] ?? null;
+        if ($user != null) {
+            $workouts = $dal->getFilteredWorkouts($favourite, $user->getId(), $title, $types, $difficulties, $focuses);
+            $this->setFavouriteFlags($workouts);
+        } else {
+            $workouts = $dal->getFilteredWorkouts($title, $types, $difficulties, $focuses);
+        }
 
         return new JSONResponse([
-            'workouts' => $workouts
+            'workouts' => $workouts,
+            'user' => $user
         ]);
     }
 

@@ -27,7 +27,7 @@ interface WorkoutModel {
 
 
 class Workout {
-    countdownLabel: Element = <HTMLElement>document.querySelector('#stage-countdown');
+    stageInfoLabel: Element = <HTMLElement>document.querySelector('#stage-countdown');
     setsCompletedLabel: Element = document.querySelector('#sets-completed').firstElementChild;
     startOrTopButton: Element = document.querySelector('#start-or-stop-button');
 
@@ -60,6 +60,7 @@ class Workout {
                 this.workoutData = data.workout;
                 this.stages = data.workout.stages;
                 this.stagesCount = data.workout.stages.length;
+                this.updateSetsCompletedLabel();
             })
     }
 
@@ -127,15 +128,15 @@ class Workout {
     }
 
     updateStageCountdownLabel(seconds: number, totalSeconds: number) {
-        this.countdownLabel.classList.remove('countdown-hidden')
+        this.stageInfoLabel.classList.remove('countdown-hidden')
         const timeLabel = this.getFormattedTime(seconds);
         const totalTimeLabel = this.getFormattedTime(totalSeconds);
-        this.countdownLabel.textContent = timeLabel + ' / ' + totalTimeLabel;
+        this.stageInfoLabel.textContent = timeLabel + ' / ' + totalTimeLabel;
     }
 
     clearStageCountdownLabel() {
-        this.countdownLabel.textContent = ' ';
-        this.countdownLabel.classList.add('countdown-hidden')
+        this.stageInfoLabel.textContent = ' ';
+        this.stageInfoLabel.classList.add('countdown-hidden')
     }
 
     getFormattedTime(seconds: number) {
@@ -155,39 +156,49 @@ class Workout {
         this.setsCompleted += 1;
         this.updateSetsCompletedLabel();
 
-        const restDuration = this.workoutData.setRestDuration;
-        this.updateRestCountdownLabel(restDuration);
+        if (this.setsCompleted < this.workoutData.setCount) {
+            const restDuration = this.workoutData.setRestDuration;
+            this.updateRestCountdownLabel(restDuration);
+            this.stageInfoLabel.classList.remove('countdown-hidden')
 
-        let seconds = restDuration;
-        console.log('removing from rest');
-        this.countdownLabel.classList.remove('countdown-hidden')
-        this.updateRestCountdownLabel(seconds);
-        this.restTimer = setInterval(() => {
-            this.updateRestCountdownLabel(seconds - 1);
+            let seconds = restDuration;
+            this.updateRestCountdownLabel(seconds);
+            this.restTimer = setInterval(() => {
+                this.updateRestCountdownLabel(seconds - 1);
 
-            if (seconds == 1) {
-                clearInterval(this.restTimer)
-                this.clearRestCountdownLabel()
-                this.startStage(0);
-            }
+                if (seconds == 1) {
+                    clearInterval(this.restTimer)
+                    this.clearRestCountdownLabel()
+                    this.startStage(0);
+                }
 
-            seconds--;
-        }, 1000);
+                seconds--;
+            }, 1000);
+        } else {
+            this.finishWorkout();
+        }
+    }
+
+    finishWorkout() {
+        this.stop();
+
+        this.stageInfoLabel.classList.remove('countdown-hidden')
+        this.stageInfoLabel.textContent = 'Finished';
     }
 
     updateSetsCompletedLabel() {
-        this.setsCompletedLabel.textContent = 'Sets completed: ' + this.setsCompleted;
-    }
+        this.setsCompletedLabel.textContent = 'Sets completed: ' + this.setsCompleted + ' / ' + this.workoutData.setCount;
 
+    }
     updateRestCountdownLabel(seconds: number) {
-        this.countdownLabel.classList.remove('countdown-hidden')
+        this.stageInfoLabel.classList.remove('countdown-hidden')
         const timeLabel = this.getFormattedTime(seconds);
-        this.countdownLabel.textContent = 'Rest now ' + timeLabel;
+        this.stageInfoLabel.textContent = 'Rest now ' + timeLabel;
     }
 
     clearRestCountdownLabel() {
-        this.countdownLabel.textContent = ' ';
-        this.countdownLabel.classList.add('countdown-hidden')
+        this.stageInfoLabel.textContent = ' ';
+        this.stageInfoLabel.classList.add('countdown-hidden')
     }
 }
 
@@ -215,12 +226,6 @@ document.addEventListener( 'DOMContentLoaded', function () {
         arrows      : false,
         cover       : false,
         isNavigation: false,
-        // breakpoints : {
-        //     600: {
-        //         fixedWidth : 60,
-        //         fixedHeight: 44,
-        //     },
-        // },
     } );
 
     mainSlider.sync(thumbnailsSlider);

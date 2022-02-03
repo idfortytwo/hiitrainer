@@ -14,9 +14,16 @@ class WorkoutRenderer extends Renderer {
     /**
      * @Route(path="/workouts", methods={"GET"})
      */
-    public function workouts() {
+    public function workouts(bool $favourite = false) {
         $dal = new WorkoutRepository();
-        $workouts = $dal->getWorkouts();
+
+        /* @var User $user */
+        $user = $_SESSION['user'] ?? null;
+        if ($user != null) {
+            $workouts = $dal->getWorkouts($favourite, $user->getId());
+        } else {
+            $workouts = $dal->getWorkouts();
+        }
 
         $this->setFavouriteFlags($workouts);
 
