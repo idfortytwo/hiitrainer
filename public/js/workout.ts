@@ -95,6 +95,9 @@ class Workout {
     }
 
     startStage(stageNumber: number) {
+        const audio = new Audio('/public/audio/ding.mp3');
+        audio.play();
+
         let stage = this.stages[stageNumber];
 
         let stageDuration = parseInt(stage.value);
@@ -155,6 +158,9 @@ class Workout {
     finishSet() {
         this.setsCompleted += 1;
         this.updateSetsCompletedLabel();
+
+        const audio = new Audio('/public/audio/finish-ding.mp3');
+        audio.play();
 
         if (this.setsCompleted < this.workoutData.setCount) {
             const restDuration = this.workoutData.setRestDuration;
