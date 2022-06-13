@@ -1,4 +1,4 @@
-<script src="https://kit.fontawesome.com/723297a893.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/03db278486.js" crossorigin="anonymous"></script>
 
 <header>
     <nav>

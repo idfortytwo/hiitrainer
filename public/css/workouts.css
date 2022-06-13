@@ -41,13 +41,13 @@
 }
 
 .collapsible:after {
-    content: '\f078';
+    content: '\f106';
     font-family: FontAwesome, sans-serif;
     font-size: 18px;
 }
 
 .active:after {
-    content: "\f077";
+    content: '\f107';
     font-family: FontAwesome, sans-serif;
     font-size: 18px;
 }
