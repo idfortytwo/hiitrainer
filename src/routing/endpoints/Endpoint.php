@@ -2,27 +2,27 @@
 
 namespace Routing\Endpoints;
 
-use Controllers\Controller;
+use Controllers\IController;
 use HTTP\Responses\IResponse;
 use HTTP\Responses\JSONResponse;
 
 class Endpoint {
-    private Controller $controller;
+    private IController $controller;
     private string $methodName;
     private array $methodParams;
 
     /**
-     * @param Controller $controller
+     * @param IController $controller
      * @param string $methodName
      * @param array $methodParams
      */
-    public function __construct(Controller $controller, string $methodName, array $methodParams) {
+    public function __construct(IController $controller, string $methodName, array $methodParams) {
         $this->controller = $controller;
         $this->methodName = $methodName;
         $this->methodParams = $methodParams;
     }
 
-    public function getController(): Controller {
+    public function getController(): IController {
         return $this->controller;
     }
 
@@ -34,7 +34,7 @@ class Endpoint {
         return $this->methodParams;
     }
 
-    public function handle(array $args) : IResponse {
+    public function handle(array $args): IResponse {
         $validator = new ParamValidator($args, $this->methodParams);
         $validationResult = $validator->validate();
 

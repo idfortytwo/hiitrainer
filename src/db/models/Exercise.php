@@ -35,7 +35,7 @@ class Exercise implements JsonSerializable {
         return "Exercise(id: {$this->id}, name: {$this->name}, filename: {$this->filename})";
     }
 
-    public function jsonSerialize() : array {
+    public function jsonSerialize(): array {
         return [
             'id' => $this->id,
             'name' => $this->name,

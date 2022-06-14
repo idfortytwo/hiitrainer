@@ -10,7 +10,7 @@ class Redirect extends Response {
         $this->location = $location;
     }
 
-    protected function setupHeaders() {
+    protected function setupHeaders(): void {
         parent::setupHeaders();
         header('Location: '. $this->location);
     }

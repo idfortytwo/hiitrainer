@@ -13,7 +13,7 @@ abstract class Repository {
         $this->database = new Connection();
     }
 
-    protected function getQuery(string $statement) : PDOStatement {
+    protected function getQuery(string $statement): PDOStatement {
         return $this->database->connect()->prepare($statement);
     }
 }

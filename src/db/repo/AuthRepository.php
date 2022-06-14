@@ -6,7 +6,7 @@ use DB\Models\User;
 use PDO;
 
 class AuthRepository extends Repository {
-    public function addUser(string $email, string $passwordHash) : User {
+    public function addUser(string $email, string $passwordHash): User {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
         INSERT INTO users (email, pass_hash, type_id)
@@ -27,7 +27,7 @@ class AuthRepository extends Repository {
         return User::construct($userID, 'user', $email, $passwordHash);
     }
 
-    public function getUser(string $email) : User|null {
+    public function getUser(string $email): User|null {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
         SELECT users.id as id, type, email, pass_hash as password
@@ -38,18 +38,8 @@ class AuthRepository extends Repository {
         $stmt->bindValue(':email', $email);
         $stmt->execute();
 
-//        $stmt->setFetchMode(PDO::FETCH_CLASS, User::class);
-//        $user = $stmt->fetch();
-//
-//        if ($user == null) {
-//            return null;
-//        }
-//        return $user;
-
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         $rs = $stmt->fetch();
-//
-//        var_dump($rs['id'] . '   ' . $rs['type'] . '   '. $rs['email'].'   '. $rs['password'].'<br>');
 
         return User::construct($rs['id'], $rs['type'], $rs['email'], $rs['password']);
     }

@@ -2,4 +2,4 @@
 
 namespace Controllers;
 
-interface Controller {}
+interface IController {}

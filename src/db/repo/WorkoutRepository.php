@@ -13,6 +13,7 @@ use PDOException;
 class WorkoutRepository extends Repository {
     /**
      * @param bool $onlyFavourites
+     * @param int $userID
      * @return array<Workout>
      */
     public function getWorkouts(bool $onlyFavourites = false, int $userID = 0) : array {
@@ -25,7 +26,7 @@ class WorkoutRepository extends Repository {
                  join workout_focus wf on wf.id = wkt.focus_id
         ";
 
-        if ($onlyFavourites == true) {
+        if ($onlyFavourites) {
             $query .= "
                 join user_favourite_workout_map ufwm on wkt.id = ufwm.workout_id
                 where user_id = :user_id
@@ -33,7 +34,7 @@ class WorkoutRepository extends Repository {
         }
 
         $stmt = $stmt->prepare($query);
-        if ($onlyFavourites == true) {
+        if ($onlyFavourites) {
             $stmt->bindValue(':user_id', $userID, PDO::PARAM_INT);
         }
         $stmt->execute();
@@ -55,30 +56,26 @@ class WorkoutRepository extends Repository {
                                         string $title=null,
                                         array  $types=null,
                                         array  $difficulties=null,
-                                        array  $focuses=null): array {
+                                        array  $focuses=null) : array {
         $stmt = $this->database->connect();
         $query = "
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
-        from workout as wkt
-             join workout_difficulty wd on wd.id = wkt.difficulty_id
-             join workout_type wt on wt.id = wkt.focus_id
-             join workout_focus wf on wf.id = wkt.focus_id
+            select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, wkt.set_rest_duration, wt.image
+            from workout as wkt
+                 join workout_difficulty wd on wd.id = wkt.difficulty_id
+                 join workout_type wt on wt.id = wkt.focus_id
+                 join workout_focus wf on wf.id = wkt.focus_id
         ";
 
         $boundParams = array();
         $paramCount = 0;
         $filterCount = 0;
 
-        if ($onlyFavourites == true) {
+        if ($onlyFavourites) {
             $query .= "
                 join user_favourite_workout_map ufwm on wkt.id = ufwm.workout_id
                 where user_id = :user_id?
             ";
-//            $boundParams[] = [1, $userID, PDO::PARAM_INT];
-//            var_dump($boundParams);
-//
             $filterCount++;
-//            $paramCount++;
         } else {
             $query .= " where ";
         }
@@ -138,7 +135,7 @@ class WorkoutRepository extends Repository {
         $query .= ';';
 
         $stmt = $stmt->prepare($query);
-        if ($onlyFavourites == true) {
+        if ($onlyFavourites) {
             $stmt->bindValue(':user_id', $userID);
         }
         foreach ($boundParams as [$param, $value]) {
@@ -169,20 +166,20 @@ class WorkoutRepository extends Repository {
      * @param int $id
      * @return Workout|null
      */
-    public function getWorkout(int $id) : Workout|null {
+    public function getWorkout(int $id): Workout|null {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, wt.image, 
-               e.name, st.type stage_type, sem.stage_data, sem.\"order\", filename
-        from workout wkt
-             join workout_type wt on wt.id = wkt.type_id
-             join workout_difficulty wd on wd.id = wkt.difficulty_id
-             join workout_focus wf on wf.id = wkt.focus_id
-             join exercise_workout_map sem on wkt.id = sem.wkt_id
-             join stage_type st on st.id = sem.stage_type_id
-             join exercise e on sem.exr_id = e.id
-        where wkt.id = :id
-        order by sem.\"order\";
+            select wkt.id, wkt.title, wt.type, wd.difficulty, wf.focus, wkt.set_count, set_rest_duration, wt.image, 
+                   e.name, st.type stage_type, sem.stage_data, sem.\"order\", filename
+            from workout wkt
+                 join workout_type wt on wt.id = wkt.type_id
+                 join workout_difficulty wd on wd.id = wkt.difficulty_id
+                 join workout_focus wf on wf.id = wkt.focus_id
+                 join exercise_workout_map sem on wkt.id = sem.wkt_id
+                 join stage_type st on st.id = sem.stage_type_id
+                 join exercise e on sem.exr_id = e.id
+            where wkt.id = :id
+            order by sem.\"order\";
         ");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -202,12 +199,12 @@ class WorkoutRepository extends Repository {
             $fr['set_count'], $fr['set_rest_duration'], $fr['image'], $stages);
     }
 
-    public function getWorkoutDifficultyID(string $difficulty) : int {
+    public function getWorkoutDifficultyID(string $difficulty): int {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select id 
-        from postgres.public.workout_difficulty
-        where difficulty = :difficulty 
+            select id 
+            from postgres.public.workout_difficulty
+            where difficulty = :difficulty 
         ");
         $stmt->bindValue(':difficulty', $difficulty);
         $stmt->execute();
@@ -216,12 +213,12 @@ class WorkoutRepository extends Repository {
         return $stmt->fetch()['id'];
     }
 
-    public function getWorkoutTypeID(string $type) : int {
+    public function getWorkoutTypeID(string $type): int {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select id 
-        from postgres.public.workout_type
-        where type = :type 
+            select id 
+            from postgres.public.workout_type
+            where type = :type 
         ");
         $stmt->bindValue(':type', $type);
         $stmt->execute();
@@ -230,12 +227,12 @@ class WorkoutRepository extends Repository {
         return $stmt->fetch()['id'];
     }
 
-    public function getWorkoutFocusID(string $focus) : int {
+    public function getWorkoutFocusID(string $focus): int {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
-        select id 
-        from postgres.public.workout_focus
-        where focus = :focus 
+            select id 
+            from postgres.public.workout_focus
+            where focus = :focus 
         ");
         $stmt->bindValue(':focus', $focus);
         $stmt->execute();
@@ -245,16 +242,16 @@ class WorkoutRepository extends Repository {
     }
 
     public function addWorkout(string $title, int $difficultyID, int $focusID, int $typeID,
-                               int $setRestDuration, int $setCount, array $stages) : int {
+                               int $setRestDuration, int $setCount, array $stages): int {
         $conn = $this->database->connect();
         $conn->beginTransaction();
 
         try {
             $stmt = $conn->prepare("
-        insert into workout (title, difficulty_id, focus_id, type_id, set_rest_duration, set_count) 
-        values (:title, :difficulty_id, :focus_id, :type_id, :set_rest_duration, :set_count)
-        returning id; 
-        ");
+                insert into workout (title, difficulty_id, focus_id, type_id, set_rest_duration, set_count) 
+                values (:title, :difficulty_id, :focus_id, :type_id, :set_rest_duration, :set_count)
+                returning id; 
+            ");
 
             $stmt->bindValue(':title', $title);
             $stmt->bindValue(':difficulty_id', $difficultyID);
@@ -297,7 +294,7 @@ class WorkoutRepository extends Repository {
         return $workoutID;
     }
 
-    public function getFavouriteWorkoutIDs(int $userID) : array {
+    public function getFavouriteWorkoutIDs(int $userID): array {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
             SELECT workout_id 
@@ -316,7 +313,7 @@ class WorkoutRepository extends Repository {
         return $workoutIDs;
     }
 
-    public function likeWorkout(int $userID, int $workoutID) : void {
+    public function likeWorkout(int $userID, int $workoutID): void {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
             INSERT INTO user_favourite_workout_map (user_id, workout_id) 
@@ -327,7 +324,7 @@ class WorkoutRepository extends Repository {
         $stmt->execute();
     }
 
-    public function unlikeWorkout(int $userID, int $workoutID) : void {
+    public function unlikeWorkout(int $userID, int $workoutID): void {
         $stmt = $this->database->connect();
         $stmt = $stmt->prepare("
             DELETE FROM user_favourite_workout_map

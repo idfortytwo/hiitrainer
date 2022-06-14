@@ -3,6 +3,6 @@
 namespace Routing;
 
 interface IRoute {
-    function getPath();
-    function getMethods();
+    function getPath(): string;
+    function getMethods(): array;
 }

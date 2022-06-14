@@ -27,13 +27,13 @@ class Routing {
         ];
     }
 
-    public function setup() {
+    public function setup(): void {
         foreach ($this->controllers as $controller) {
             $this->router->register($controller);
         }
     }
 
-    public function run(Request $request) : IResponse {
+    public function run(Request $request): IResponse {
         return $this->router->run($request);
     }
 }

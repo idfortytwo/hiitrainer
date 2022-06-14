@@ -11,7 +11,7 @@ class ParamValidator {
         $this->params = $params;
     }
 
-    public function validate() : string|null {
+    public function validate(): string|null {
         foreach($this->params as $param) {
             /** @var Parameter $param */
             $paramName = $param->getName();
@@ -31,11 +31,11 @@ class ParamValidator {
     }
 
 
-    private function hasParameter(Parameter $param) : bool {
+    private function hasParameter(Parameter $param): bool {
         return array_key_exists($param->getName(), $this->args);
     }
 
-    private function hasValidType($arg, string $paramType) : bool {
+    private function hasValidType($arg, string $paramType): bool {
         return match ($paramType) {
             'string' => true,
             'int' => filter_var($arg, FILTER_VALIDATE_INT),

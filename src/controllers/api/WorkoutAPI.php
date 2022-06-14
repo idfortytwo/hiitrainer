@@ -2,7 +2,7 @@
 
 namespace Controllers\API;
 
-use Controllers\Controller;
+use Controllers\IController;
 use DB\Models\User;
 use Exception;
 use HTTP\Responses\JSONResponse;
@@ -11,7 +11,7 @@ use PDOException;
 use Routing\Route;
 use DB\Repo\WorkoutRepository;
 
-class WorkoutAPI implements Controller {
+class WorkoutAPI implements IController {
     /**
      * @Route(path="/workout/{id}", methods={"GET"})
      */
@@ -54,7 +54,7 @@ class WorkoutAPI implements Controller {
         ]);
     }
 
-    protected function setFavouriteFlags(array $workouts) {
+    protected function setFavouriteFlags(array $workouts): void {
         $dal = new WorkoutRepository();
 
         /* @var User $user */
@@ -103,7 +103,7 @@ class WorkoutAPI implements Controller {
     /**
      * @Route(path="/api/workouts", methods={"GET"})
      */
-    public function apiWorkouts() : JSONResponse{
+    public function apiWorkouts(): JSONResponse{
         $dal = new WorkoutRepository();
         $workouts = $dal->getWorkouts();
 
@@ -115,7 +115,7 @@ class WorkoutAPI implements Controller {
     /**
      * @Route(path="/api/workouts/{id}", methods={"GET"})
      */
-    public function apiWorkout(int $id) : JSONResponse {
+    public function apiWorkout(int $id): JSONResponse {
         $dal = new WorkoutRepository();
         $workout = $dal->getWorkout($id);
 

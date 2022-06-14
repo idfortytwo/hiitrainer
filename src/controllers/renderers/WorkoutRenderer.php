@@ -8,13 +8,14 @@ use DB\Models\User;
 use DB\Repo\ExerciseRepository;
 use DB\Repo\WorkoutRepository;
 use HTTP\Responses\JSONResponse;
+use HTTP\Responses\Response;
 use Routing\Route;
 
 class WorkoutRenderer extends Renderer {
     /**
      * @Route(path="/workouts", methods={"GET"})
      */
-    public function workouts(bool $favourite = false) {
+    public function workouts(bool $favourite = false): Response {
         $dal = new WorkoutRepository();
 
         /* @var User $user */
@@ -33,7 +34,7 @@ class WorkoutRenderer extends Renderer {
     /**
      * @Route(path="/workouts/{id}", methods={"GET"})
      */
-    public function workout(int $id) {
+    public function workout(int $id): Response {
         $dal = new WorkoutRepository();
         $workout = $dal->getWorkout($id);
 
@@ -43,7 +44,7 @@ class WorkoutRenderer extends Renderer {
     /**
      * @Route(path="/workouts/creator", methods={"GET"})
      */
-    public function addWorkout() {
+    public function addWorkout(): Response {
         $dal = new ExerciseRepository();
         $exercises = $dal->getExercises();
 
@@ -52,7 +53,7 @@ class WorkoutRenderer extends Renderer {
         ]);
     }
 
-    protected function setFavouriteFlags(array $workouts) {
+    protected function setFavouriteFlags(array $workouts): void {
         $dal = new WorkoutRepository();
 
         /* @var User $user */

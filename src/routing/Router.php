@@ -2,23 +2,23 @@
 
 namespace Routing;
 
-use Controllers\Controller;
+use Controllers\IController;
 use HTTP\Requests\Request;
 use HTTP\Responses\IResponse;
 use HTTP\Responses\NotFoundResponse;
 use Routing\Endpoints\Endpoint;
 
 class Router {
-    public array $routes = array();
+    private array $routes = array();
 
-    public function register(Controller $controller) {
+    public function register(IController $controller): void {
         $inspector = new RouteInspector($controller);
         foreach($inspector->getRoutingMap() as $urlRegex => $endpoint) {
             $this->routes[$urlRegex] = $endpoint;
         }
     }
 
-    public function run(Request $request) : IResponse {
+    public function run(Request $request): IResponse {
         [$path, $queryArgs] = $this->parseUrl($request->getUrl());
 
         foreach ($this->routes as $pathRegex => $requestMethodsMap) {
@@ -35,7 +35,7 @@ class Router {
         return new NotFoundResponse();
     }
 
-    private function parseUrl(string $url) : array {
+    private function parseUrl(string $url): array {
         $urlParts = parse_url($url);
         $path = $urlParts['path'];
         $queryArgs = array();

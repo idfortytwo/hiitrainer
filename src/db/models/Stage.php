@@ -17,23 +17,23 @@ class Stage implements JsonSerializable {
         $this->value = $value;
     }
 
-    public function getExercise() : Exercise {
+    public function getExercise(): Exercise {
         return $this->exercise;
     }
 
-    public function getOrder() : int {
+    public function getOrder(): int {
         return $this->order;
     }
 
-    public function getType() : string {
+    public function getType(): string {
         return $this->type;
     }
 
-    public function getValue() : mixed {
+    public function getValue(): mixed {
         return $this->value;
     }
 
-    public function jsonSerialize() : array {
+    public function jsonSerialize(): array {
         return [
             'exercise' => $this->exercise,
             'order' => $this->order,

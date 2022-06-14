@@ -7,7 +7,7 @@ class JSONResponse extends Response {
         parent::__construct($content, $code, 'application/json');
     }
 
-    public function getContent() : string|bool {
+    public function getContent(): string|bool {
         return json_encode($this->content);
     }
 }

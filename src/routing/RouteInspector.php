@@ -7,33 +7,33 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionException;
 
-use Controllers\Controller;
+use Controllers\IController;
 use Routing\Endpoints\Endpoint;
 use Routing\Endpoints\Parameter;
 
 class RouteInspector {
-    private Controller $controller;
+    private IController $controller;
     private array $routingMap = array();
     private AnnotationReader $reader;
 
-    public function __construct(Controller $controller) {
+    public function __construct(IController $controller) {
         $this->controller = $controller;
         $this->reader = new AnnotationReader();
     }
 
-    public function getRoutingMap() : array {
+    public function getRoutingMap(): array {
         $this->inspectMethods();
         return $this->routingMap;
     }
 
-    private function inspectMethods() {
+    private function inspectMethods(): void {
         $controllerRefl = new ReflectionClass(get_class($this->controller));
         foreach ($controllerRefl->getMethods() as $controllerMethod) {
             $this->inspectMethod($controllerMethod);
         }
     }
 
-    private function inspectMethod(ReflectionMethod $controllerMethod) {
+    private function inspectMethod(ReflectionMethod $controllerMethod): void {
         $annotations = $this->reader->getMethodAnnotations($controllerMethod);
         foreach ($annotations as $route) {
             if ($route instanceof IRoute) {
@@ -44,7 +44,7 @@ class RouteInspector {
         }
     }
 
-    private function getMethodParams(ReflectionMethod $controllerMethod) : array {
+    private function getMethodParams(ReflectionMethod $controllerMethod): array {
         $params = array();
         foreach ($controllerMethod->getParameters() as $arg) {
             $name = $arg->getName();
@@ -63,7 +63,7 @@ class RouteInspector {
         return $params;
     }
 
-    private function mapEndpoint(IRoute $route, Endpoint $endpoint) {
+    private function mapEndpoint(IRoute $route, Endpoint $endpoint): void {
         $path = substr($route->getPath(), 1);
         $pathRegex = $this->parseToRegex($path);
 
@@ -71,7 +71,7 @@ class RouteInspector {
         $this->updateRoutingMap($pathRegex, $methods, $endpoint);
     }
 
-    private function parseToRegex(string $path) : string {
+    private function parseToRegex(string $path): string {
         $path = preg_replace('(/)', '\/', $path);
         $pattern = '({(.+)})';
         $replacement = '(?P<${1}>\d+)';
@@ -79,7 +79,7 @@ class RouteInspector {
         return '(^'.preg_replace($pattern, $replacement, $path).'$)';
     }
 
-    private function updateRoutingMap(string $pathRegex, array $requestMethods, Endpoint $endpoint) {
+    private function updateRoutingMap(string $pathRegex, array $requestMethods, Endpoint $endpoint): void {
         $endpoints = $this->routingMap[$pathRegex] ?? array();
         foreach ($requestMethods as $requestMethod) {
             $endpoints[$requestMethod] = $endpoint;

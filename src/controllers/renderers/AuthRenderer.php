@@ -7,6 +7,7 @@ use DB\Models\User;
 use DB\Repo\AuthRepository;
 use HTTP\Responses\JSONResponse;
 use HTTP\Responses\Redirect;
+use HTTP\Responses\Response;
 use PDOException;
 use Routing\Route;
 
@@ -14,14 +15,14 @@ class AuthRenderer extends Renderer {
     /**
      * @Route(path="/register", methods={"GET"})
      */
-    public function registerRender() {
+    public function registerRender(): Response {
         return $this->render('register', [ 'userExists' => 'false' ]);
     }
 
     /**
      * @Route(path="/register", methods={"POST"})
      */
-    public function register() {
+    public function register(): Response | Redirect {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
@@ -39,7 +40,7 @@ class AuthRenderer extends Renderer {
     /**
      * @Route(path="/login", methods={"GET"})
      */
-    public function loginRender() {
+    public function loginRender(): Response {
         return $this->render('login', [
             'emailIncorrect' => 'false',
             'passwordIncorrect' => 'false'
@@ -49,7 +50,7 @@ class AuthRenderer extends Renderer {
     /**
      * @Route(path="/login", methods={"POST"})
      */
-    public function login() {
+    public function login(): Response | Redirect {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
@@ -78,12 +79,12 @@ class AuthRenderer extends Renderer {
     /**
      * @Route(path="/logout", methods={"GET"})
      */
-    public function logout() {
+    public function logout(): Redirect {
         session_destroy();
         return new Redirect('/workouts');
     }
 
-    private function saveUser(User $user) {
+    private function saveUser(User $user): void {
         $_SESSION['user'] = $user;
     }
 }

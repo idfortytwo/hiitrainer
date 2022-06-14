@@ -21,7 +21,7 @@ class Connection {
         $this->password = $config['PASSWORD'];
     }
 
-    public function connect() : PDO {
+    public function connect(): PDO {
         $conn = new PDO(
             "pgsql:host=$this->host;port=$this->port;dbname=$this->database",
             $this->username,

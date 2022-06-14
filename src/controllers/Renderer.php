@@ -5,7 +5,7 @@ namespace Controllers;
 use DB\Models\User;
 use HTTP\Responses\Response;
 
-abstract class Renderer implements Controller {
+abstract class Renderer implements IController {
     protected function render(string $template = null, array $variables = []): Response {
         $templatePath = 'public/views/'. $template.'.php';
         $output = 'File not found';
@@ -21,7 +21,7 @@ abstract class Renderer implements Controller {
         return new Response($output);
     }
 
-    public function getHeaderLinks() {
+    public function getHeaderLinks(): void {
         echo '<a class="nav-item" href="/workouts/">Workouts</a>';
 
         /* @var User $user */
@@ -39,7 +39,7 @@ abstract class Renderer implements Controller {
         }
     }
 
-    public function getAuthButtons() {
+    public function getAuthButtons(): void {
         /* @var User $user */
         $user = $_SESSION['user'] ?? null;
         if ($user != null) {

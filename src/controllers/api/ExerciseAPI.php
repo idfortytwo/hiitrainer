@@ -2,12 +2,12 @@
 
 namespace Controllers\API;
 
-use Controllers\Controller;
+use Controllers\IController;
 use HTTP\Responses\JSONResponse;
 use Routing\Route;
 use DB\Repo\ExerciseRepository;
 
-class ExerciseAPI implements Controller {
+class ExerciseAPI implements IController {
     /**
      * @Route(path="/exercises", methods={"GET"})
      */

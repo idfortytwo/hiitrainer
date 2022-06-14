@@ -13,25 +13,25 @@ class Response implements IResponse {
         $this->contentType = $contentType;
     }
 
-    public function send() {
+    public function send(): void {
         $this->setupHeaders();
         $this->sendContent();
     }
 
-    protected function setupHeaders() {
+    protected function setupHeaders(): void {
         $this->setResponseCode($this->getCode());
         $this->setContentType($this->getContentType());
     }
 
-    protected function setResponseCode(int $code) {
+    protected function setResponseCode(int $code): void {
         http_response_code($code);
     }
 
-    protected function setContentType(string $contentType) {
+    protected function setContentType(string $contentType): void {
         header("Content-Type: {$contentType}");
     }
 
-    protected function sendContent() {
+    protected function sendContent(): void {
         echo $this->getContent();
     }
 
