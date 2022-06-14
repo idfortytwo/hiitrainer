@@ -36,7 +36,7 @@ class RouteInspector {
     private function inspectMethod(ReflectionMethod $controllerMethod): void {
         $annotations = $this->reader->getMethodAnnotations($controllerMethod);
         foreach ($annotations as $route) {
-            if ($route instanceof IRoute) {
+            if ($route instanceof Route) {
                 $params = $this->getMethodParams($controllerMethod);
                 $endpoint = new Endpoint($this->controller, $controllerMethod->getName(), $params);
                 $this->mapEndpoint($route, $endpoint);
@@ -63,7 +63,7 @@ class RouteInspector {
         return $params;
     }
 
-    private function mapEndpoint(IRoute $route, Endpoint $endpoint): void {
+    private function mapEndpoint(Route $route, Endpoint $endpoint): void {
         $path = substr($route->getPath(), 1);
         $pathRegex = $this->parseToRegex($path);
 

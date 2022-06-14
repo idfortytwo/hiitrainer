@@ -12,7 +12,7 @@ use Doctrine\Common\Annotations\Annotation;
  *   @Attribute("methods", type = "array<string>"),
  * })
  */
-class Route implements IRoute {
+class Route {
     private string $path;
     private array $methods;
 
