@@ -1,0 +1,335 @@
+@startuml
+
+package routing {
+    package endpoints {
+        class Endpoint {
+            - controller: IController
+            - methodName: string
+            - methodParams: array
+
+            + handle(array): IResponse
+            + getController(): IController
+            + getMethodName(): string
+            + getMethodParams(): array
+        }
+
+        class Parameter {
+            - name: string
+            - type: string
+            - isRequired: bool
+            - defaultValue: mixed
+
+            + getName(): string
+            + getType(): string
+            + isRequired(): bool
+            + getDefaultValue(): mixed
+        }
+
+        class ParamValidator {
+            - args: array
+            - params: array
+
+            + validate(): string|null
+            - hasParameter(Parameter): bool
+            - hasValidType(mixed, string): bool
+        }
+    }
+
+    class Routing {
+        - router: Router
+        - controllers: array
+
+        + setup(): void
+        + run(Request): IResponse
+    }
+
+    class Router {
+        - routes: array
+        + register(Controller): void
+        + run(Request): IResponse
+        - parseURL(string): array
+    }
+
+
+    class RouteInspector {
+        - controller: IController
+        - routingMap: array
+        - reader: AnnotationReader
+
+        + getRoutingMap(): array
+        - inspectMethods(): void
+        - inspectMethod(ReflectionMethod): void
+        - getMethodParams(ReflectionMethod): array
+        - mapEndpoint(Route, Endpoint): void
+        - parseToRegex(string): string
+        - updateRoutingMap(string, array, Endpoint): void
+    }
+
+    class Route {
+        - path: string
+        - methods: array
+
+        + getPath(): string
+        + getMethods(): array
+    }
+}
+
+
+package http {
+    package requests {
+        class Request {
+            - url: string
+            - method: string
+
+            + getUrl(): string
+            + getMethod(): string
+        }
+    }
+
+    package responses {
+        interface IResponse {
+            + send(): void
+        }
+
+        class Response {
+            # code: int
+            # content: mixed
+            # contentType: string
+
+            + send(): void
+            # setupHeaders(): void
+            # sendContent(): void;
+            + getCode(): int
+            # setResponseCode(int): void
+            + getContent(): mixed
+            + getContentType(): string
+            # setContentType(string): void
+        }
+
+        class NotFoundResponse {
+        }
+
+        class Redirect {
+            # setupHeaders(): void
+        }
+
+        class JSONResponse {
+            + getContent(): string|bool
+        }
+    }
+}
+
+
+package controllers {
+    interface IController {
+    }
+
+    package api {
+        class ExerciseAPI {
+            + getAll(): JSONResponse
+        }
+
+        class WorkoutAPI {
+            + getWorkout(int): JSONResponse
+            + getFilteredWorkouts(bool): JSONResponse
+            # setFavouriteFlags(array): void
+            + addWorkout(): JSONResponse
+            + apiWorkouts(): JSONResponse
+            + apiWorkout(): JSONResponse
+            + likeWorkout(): JSONResponse
+            + unlikeWorkout(): JSONResponse
+        }
+    }
+
+    abstract class Renderer {
+        # render(string, array): Response
+        + getHeaderLinks(): void
+        + getAuthButtons(): void
+    }
+
+    package renderers {
+        class AuthRenderer {
+            + registerRender(): Response
+            + register(): Response|Redirect
+            + loginRender(): Response
+            + login(): Response|Redirect
+            + logout(): Redirect
+        }
+
+        class WorkoutRenderer {
+            + workouts(): Response
+            + workout(): Response
+            + addWorkout(): Response
+            # setFavouriteFlags(): void
+        }
+    }
+}
+
+
+package db {
+    package models {
+        class Exercise {
+            - id: int
+            - name: string
+            - filename: string
+
+            + getId(): int
+            + getName(): string
+            + getFilename(): string
+            + jsonSerialize(): array
+        }
+
+        class Stage {
+            - exercise: Exercise
+            - order: int
+            - type: string
+            - value: mixed
+
+            + getExercise(): Exercise
+            + getOrder(): int
+            + getType(): string
+            + getValue(): string
+            + jsonSerialize(): array
+        }
+
+        class User {
+            - id: int
+            - type: string
+            - email: string
+            - password: string
+
+            + getId(): int
+            + getType(): string
+            + getEmail(): string
+            + getPassword(): string
+            + jsonSerialize(): array
+        }
+
+        class Workout {
+            - id: int
+            - title: string
+            - type: string
+            - difficulty: string
+            - focus: string
+            - setCount: int
+            - setRestDuration: int
+            - image: string
+            - isFavourite: bool
+            - stages: array
+
+            + getId(): int
+            + getTitle(): string
+            + getType(): string
+            + getDifficulty(): string
+            + getFocus(): string
+            + getSetCount(): int
+            + getSetRestDuration(): int
+            + getImage(): string
+            + getIsFavourite(): bool
+            + setIsFavourite(bool): void
+            + getStages(): array
+            + jsonSerialize(): array
+        }
+    }
+
+    package repo {
+        abstract class Repository {
+            # database: Connection;
+            # getQuery(string): PDOStatement
+
+            + connect(): PDO
+        }
+
+        class AuthRepository {
+            + addUser(string, string): User
+            + getUser(string): User|null
+        }
+
+        class ExerciseRepository {
+            + getExercises(): array
+            + getExercise(int): Exercise
+        }
+
+        class WorkoutRepository {
+            + getWorkouts(bool, int): array
+            + getFilteredWorkouts(bool, int, string, array, array, array): array
+            # parseWorkoutsResultSet(array): array
+            + getWorkout(int): Workout|null
+            + getWorkoutDifficultyID(string): int
+            + getWorkoutTypeID(string): int
+            + getWorkoutFocusID(string): int
+            + addWorkout(string, int, int, int, int, int, array): int
+            + getFavouriteWorkoutIDs(int): array
+            + likeWorkout(int, int): void
+            + unlikeWorkout(int, int): void
+        }
+    }
+
+    class Connection {
+        - username: string
+        - password: string
+        - host: string
+        - port: string
+        - database: string
+    }
+}
+
+class index {
+
+}
+
+IController o-- Route
+Renderer --> IController
+ExerciseAPI -u-> IController
+WorkoutAPI  -u-> IController
+AuthRenderer    --> Renderer
+WorkoutRenderer ---> Renderer
+
+Response ...|> IResponse
+NotFoundResponse -d-|> Response
+Redirect         -d-|> Response
+JSONResponse     -d-|> Response
+
+AuthRepository     -u-|> Repository
+ExerciseRepository -u-|> Repository
+WorkoutRepository  -u-|> Repository
+Repository *-- Connection
+
+Routing *-u- IController
+Routing *-- Router
+Router o-- NotFoundResponse
+Router *-- RouteInspector
+Endpoint o-l- IResponse
+
+Router         o-- Endpoint
+Endpoint       *-l- ParamValidator
+ParamValidator o-l- Parameter
+
+RouteInspector o-- IController
+RouteInspector *-d- Parameter
+RouteInspector o-u-- Route
+
+WorkoutRenderer *-- WorkoutRepository
+WorkoutRenderer o-- Response
+
+WorkoutAPI o-- JSONResponse
+WorkoutAPI o-- Response
+WorkoutAPI *-- WorkoutRepository
+WorkoutRepository o-- Workout
+WorkoutRepository o-- Stage
+
+ExerciseAPI *-- ExerciseRepository
+ExerciseAPI o-- JSONResponse
+ExerciseRepository o-- Exercise
+
+AuthRenderer o-- Response
+AuthRenderer o-- Redirect
+AuthRenderer o--- User
+AuthRenderer *-- AuthRepository
+AuthRepository o-- User
+
+index *-- Routing
+index *-- Request
+index o-u- Response
+
+@enduml
